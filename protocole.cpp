@@ -76,6 +76,8 @@ void Protocole::initValue(int id, int nb_values) {
 // Emits signals, the first one with the first
 // three values (x, y and angle), then as musch
 // signals as there are sensors in the RegEx
+#define VARIABLE_LENGTH 0
+
 
 #define SINUS 2
 #define COSINUS 3
@@ -90,12 +92,21 @@ void Protocole::run()
     {
         if(port->bytesAvailable()>=bufferedValue)
         {
+#if VARIABLE_LENGTH == 1
             decal += port->readLine(buff+decal,port->bytesAvailable()+1);
             pos = 0;
         }
+ #else
+        port->readLine(buff,port->bytesAvailable()+1);
+ #endif
 
+ #if VARIABLE_LENGTH == 1
         for(int i=0;i<10&&((pos = rx->indexIn(buff, pos)) > -1);i++) {
+ #else
+        if((rx->indexIn(buff, 0)) > -1) {
+ #endif
             strings.append(QString(rx->cap(0)));
+
 
             values[0].append(rx->cap(1).toInt());
             values[1].append(rx->cap(5).toInt());
@@ -105,6 +116,7 @@ void Protocole::run()
             values[5].append(rx->cap(6).toInt());
 
 
+#if VARIABLE_LENGTH == 1
             buffer = QString::fromLocal8Bit(buff);
             buffer.remove(pos,rx->matchedLength());
 
@@ -114,7 +126,11 @@ void Protocole::run()
             strcpy(buff,ba.data());
 
             decal -= rx->matchedLength();
+#endif
         }
+#ifndef VARIABLE_LENGHT
+        }
+#endif
     }
 }
 
