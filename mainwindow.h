@@ -36,14 +36,11 @@ private:
     SettingsDialog * settings;
     Protocole * protocole;
     QTextEdit * textEdit;
-    QCustomPlot * graph;
-    QCustomPlot * graph_cos;
-    QCustomPlot * graph_xy;
+    QCustomPlot * graph[10];
 
     QPushButton * actionConnect, * actionDisconnect, * actionQuit, * actionConfigure;
 
-    QVector<double> *x, *y;
-    QVector<double> *y_cos, *x_cos, *xy_x, *xy_y;
+    QVector<double> *x[10], *y[10];
 };
 
 #endif // MAINWINDOW_H
