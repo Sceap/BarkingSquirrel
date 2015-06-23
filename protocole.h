@@ -13,44 +13,46 @@ class Protocole : public QThread
 {
     Q_OBJECT
 
-public:
-    Protocole();
-    ~Protocole();
+    public:
+        Protocole();
+        ~Protocole();
 
-    void send_str(const char * str);
-    void send_char(char str);
+        void send_str(const char * str);
+        void send_char(char str);
 
-    void setPort(const QString pName);
-    void setRegEx(QString pattern);
+        void addValue();
+        void addValues(int n);
 
-    void addSensor();
-    void addSensors(int n);
+        void setRegEx();
 
-    void setBufferedValue(int buff);
+        void setBufferedValue(int buff);
 
-    void initValue(int id, int nb_values);
+        QSerialPort *port;
 
-    QSerialPort *port;
+        int nbValues;
 
-    QVector<double> values[16];
-    QVector<QString> strings;
-private:
-    QRegExp *rx;
-    QString oldPattern;
-    int bufferedValue;
-    QVector<int> sensors;
+        QVector<double> values[16];
+        QVector<QString> strings;
+
+        double lastValue[16];
+        QString lastString;
+
+    private:
+        QRegExp *rx;
+        QString oldPattern;
+        int bufferedValue;
 
 
-protected:
-    void run();
+    protected:
+        void run();
 
-signals:
-    void dataRec(QString buff);
-    void sensorChanged(int n, int value);
-    void posChanged(qreal x, qreal y, qreal t);
-    void dataSin(double d, double t);
-    void dataCos(double d);
-    void updateData();
+    signals:
+        void dataRec(QString buff);
+        void sensorChanged(int n, int value);
+        void posChanged(qreal x, qreal y, qreal t);
+        void dataSin(double d, double t);
+        void dataCos(double d);
+        void updateData();
 };
 
 #endif // PROTOCOLE_H

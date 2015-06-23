@@ -17,8 +17,9 @@ Protocole::Protocole()
     port->setStopBits(QSerialPort::OneStop);
 
     rx = new QRegExp();
-    setRegEx("");
     setBufferedValue(9999999);
+
+    nbValues = 0;
 }
 
 Protocole::~Protocole()
@@ -28,46 +29,38 @@ Protocole::~Protocole()
     delete port;
 }
 
-// Sets (and resets) the port name
-void Protocole::setPort(const QString pName) {
-    port->setPortName(pName);
-    port->close();
-    port->open(QIODevice::ReadWrite);
-}
-
 
 // Sets the regEx of the received string
-void Protocole::setRegEx(QString pattern) {
-    oldPattern = pattern;
-    for(int i=0;i<sensors.size();i++) {
-        pattern += ".*s";
-        pattern += (i+'0');
-        pattern += ":([0-9]*)";
+void Protocole::setRegEx() {
+    QString regex = "\\|";
+
+    for(int i=0;i<nbValues;i++) {
+        regex += "([-\\+]*[0-9]+)";
+        if(i<nbValues-1)
+            regex+=",";
     }
-    this->rx->setPattern(pattern);
+
+    regex+="\\|";
+
+    this->rx->setPattern(regex);
 }
 
 
 // Adds a sensor to the RegEx
-void Protocole::addSensor() {
-    sensors.append(sensors.size());
-    setRegEx(oldPattern);
+void Protocole::addValue() {
+    nbValues++;
+    setRegEx();
 }
 
 // Adds n sensors to the RegEx
-void Protocole::addSensors(int n) {
+void Protocole::addValues(int n) {
     for(int i=0;i<n;i++) {
-        addSensor();
+        addValue();
     }
 }
 
 void Protocole::setBufferedValue(int buff) {
     bufferedValue = buff;
-}
-
-
-void Protocole::initValue(int id, int nb_values) {
-    //values[id] = new QVector<double>();
 }
 
 // Reads the current received buffer, and
@@ -96,15 +89,13 @@ void Protocole::run()
             decal += port->readLine(buff+decal,port->bytesAvailable()+1);
             pos = 0;
         }
- #else
+#else
         port->readLine(buff,port->bytesAvailable()+1);
- #endif
+#endif
 
- #if VARIABLE_LENGTH == 1
+#if VARIABLE_LENGTH == 1
         for(int i=0;i<10&&((pos = rx->indexIn(buff, pos)) > -1);i++) {
- #else
-        if((rx->indexIn(buff, 0)) > -1) {
- #endif
+
             strings.append(QString(rx->cap(0)));
 
 
@@ -114,6 +105,19 @@ void Protocole::run()
             values[3].append(rx->cap(4).toInt());
             values[4].append(rx->cap(5).toInt());
             values[5].append(rx->cap(6).toInt());
+
+#else
+        if((rx->indexIn(buff, 0)) > -1) {
+            lastString = QString(rx->cap(0));
+            lastValue[0] = rx->cap(1).toDouble();
+            lastValue[1] = rx->cap(5).toDouble();
+            lastValue[2] = rx->cap(6).toDouble();
+            lastValue[3] = rx->cap(4).toDouble();
+            lastValue[4] = rx->cap(5).toDouble();
+            lastValue[5] = rx->cap(6).toDouble();
+
+            emit(updateData());
+#endif
 
 
 #if VARIABLE_LENGTH == 1
@@ -127,6 +131,8 @@ void Protocole::run()
 
             decal -= rx->matchedLength();
 #endif
+        } else {
+           port->readAll();
         }
 #ifndef VARIABLE_LENGHT
         }
