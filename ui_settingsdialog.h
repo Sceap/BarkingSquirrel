@@ -29,9 +29,6 @@ class Ui_SettingsDialog
 {
 public:
     QGridLayout *gridLayout_3;
-    QHBoxLayout *horizontalLayout;
-    QSpacerItem *horizontalSpacer;
-    QPushButton *applyButton;
     QGroupBox *parametersBox;
     QGridLayout *gridLayout_2;
     QLabel *baudRateLabel;
@@ -53,6 +50,10 @@ public:
     QLabel *locationLabel;
     QLabel *vidLabel;
     QLabel *pidLabel;
+    QHBoxLayout *horizontalLayout;
+    QSpacerItem *horizontalSpacer;
+    QPushButton *applyButton;
+    QSpacerItem *horizontalSpacer_2;
 
     void setupUi(QDialog *SettingsDialog)
     {
@@ -61,20 +62,6 @@ public:
         SettingsDialog->resize(281, 216);
         gridLayout_3 = new QGridLayout(SettingsDialog);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        horizontalSpacer = new QSpacerItem(96, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
-        applyButton = new QPushButton(SettingsDialog);
-        applyButton->setObjectName(QStringLiteral("applyButton"));
-
-        horizontalLayout->addWidget(applyButton);
-
-
-        gridLayout_3->addLayout(horizontalLayout, 1, 0, 1, 2);
-
         parametersBox = new QGroupBox(SettingsDialog);
         parametersBox->setObjectName(QStringLiteral("parametersBox"));
         gridLayout_2 = new QGridLayout(parametersBox);
@@ -174,6 +161,29 @@ public:
 
         gridLayout_3->addWidget(selectBox, 0, 0, 1, 1);
 
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer);
+
+        applyButton = new QPushButton(SettingsDialog);
+        applyButton->setObjectName(QStringLiteral("applyButton"));
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(1);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(applyButton->sizePolicy().hasHeightForWidth());
+        applyButton->setSizePolicy(sizePolicy);
+
+        horizontalLayout->addWidget(applyButton);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_2);
+
+
+        gridLayout_3->addLayout(horizontalLayout, 1, 0, 1, 2);
+
 
         retranslateUi(SettingsDialog);
 
@@ -183,7 +193,6 @@ public:
     void retranslateUi(QDialog *SettingsDialog)
     {
         SettingsDialog->setWindowTitle(QApplication::translate("SettingsDialog", "Port Settings", 0));
-        applyButton->setText(QApplication::translate("SettingsDialog", "Apply", 0));
         parametersBox->setTitle(QApplication::translate("SettingsDialog", "Select Parameters", 0));
         baudRateLabel->setText(QApplication::translate("SettingsDialog", "BaudRate:", 0));
         dataBitsLabel->setText(QApplication::translate("SettingsDialog", "Data bits:", 0));
@@ -197,6 +206,7 @@ public:
         locationLabel->setText(QApplication::translate("SettingsDialog", "Location:", 0));
         vidLabel->setText(QApplication::translate("SettingsDialog", "Vendor ID:", 0));
         pidLabel->setText(QApplication::translate("SettingsDialog", "Product ID:", 0));
+        applyButton->setText(QApplication::translate("SettingsDialog", "Apply", 0));
     } // retranslateUi
 
 };

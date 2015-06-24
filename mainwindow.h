@@ -58,14 +58,7 @@ class mainWindow : public QMainWindow
 
         SettingsDialog * settings;
 
-        QTextEdit * textEdit;
         QCustomPlot * graph[10];
-
-        QPushButton * actionConnect, * actionDisconnect, * actionQuit, * actionConfigure, * actionLog, * stopStart;
-        QCheckBox * logToFile, * appendDate;
-        QLineEdit * fileName;
-        QSpinBox * cmdValue;
-        SpinBox * RTCYear, * RTCMonth, * RTCDay, * RTCHour, * RTCMinute,* RTCSecond;
 
         QVector<double> *x[10], *y[10];
 

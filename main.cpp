@@ -11,6 +11,12 @@ int main(int argc, char *argv[])
     // Creating a Qt Application environment
     QApplication drsOrders(argc, argv);
 
+    QFile File("stylesheet.qss");
+    File.open(QFile::ReadOnly);
+    QString StyleSheet = QLatin1String(File.readAll());
+
+    drsOrders.setStyleSheet(StyleSheet);
+
     // Creating and showing a window
     mainWindow mWindow;
     mWindow.show();

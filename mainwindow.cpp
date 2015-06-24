@@ -34,7 +34,7 @@ mainWindow::mainWindow() : QMainWindow(),
     ui->setupUi(this);
 
     ui->tabWidget->setCurrentIndex(0);
-
+    ui->fileName->setText("log_file");
 
     /// Creating the logger file instance
     log = new QFile();
@@ -95,9 +95,12 @@ mainWindow::mainWindow() : QMainWindow(),
 
     // The pen is used to draw a dot on XY graphs
     QPen pen;
-    pen.setColor(QColor(255,0,0,255));
+    pen.setColor(QColor(229,115,115,255));
     pen.setWidth(10);
     pen.setCapStyle(Qt::RoundCap);
+    QPen line;
+    line.setColor(QColor(25,118,210,255));
+    line.setWidth(1);
 
 
     // Populating the first graph
@@ -105,6 +108,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[0]->addGraph();
     // The datas are stored in x[0] and y[0] vectors
     graph[0]->graph(0)->setData(*x[0],*y[0]);
+    graph[0]->graph(0)->setPen(line);
     // Setting the labels of each axis, as well
     // as the range
     graph[0]->xAxis->setLabel("t");
@@ -127,6 +131,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[1]->addGraph();
     // The datas are stored in x[0] and y[1] vectors
     graph[1]->graph(0)->setData(*x[0],*y[1]);
+    graph[1]->graph(0)->setPen(line);
     // Setting the labels of each axis, as well
     // as the range
     graph[1]->xAxis->setLabel("t");
@@ -142,6 +147,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[1]->setInteraction(QCP::iRangeZoom, true);
     graph[1]->yAxis->axisRect()->setRangeDrag(Qt::Vertical);
     graph[1]->yAxis->axisRect()->setRangeZoom(Qt::Vertical);
+
 
     // Populating the third graph
     // Only one curve on this graph : X axis /Y axis of accelerometer
@@ -160,6 +166,14 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[2]->setInteraction(QCP::iRangeDrag, true);
     graph[2]->setInteraction(QCP::iRangeZoom, true);
 
+    for(int i=0;i<3;i++) {
+        graph[i]->xAxis->setBasePen(QPen(QColor(195,195,195)));
+        graph[i]->xAxis->setTickPen(QPen(QColor(195,195,195)));
+        graph[i]->xAxis->setSubTickPen(QPen(QColor(195,195,195)));
+        graph[i]->yAxis->setBasePen(QPen(QColor(195,195,195)));
+        graph[i]->yAxis->setTickPen(QPen(QColor(195,195,195)));
+        graph[i]->yAxis->setSubTickPen(QPen(QColor(195,195,195)));
+    }
 
     // Addding Window's title
     setWindowTitle("Doctor's Order Data Logger");
@@ -226,9 +240,9 @@ void mainWindow::updateData() {
     if(ui->logToFile->isChecked()) {
         // Adding the date to the name if needed
         if(ui->appendDate->isChecked())
-            log = new QFile(fileName->text()+date+".txt");
+            log = new QFile(ui->fileName->text()+date+".txt");
         else
-            log = new QFile(fileName->text()+".txt");
+            log = new QFile(ui->fileName->text()+".txt");
 
         // Always open as Append
         log->open(QIODevice::Append);
@@ -310,11 +324,17 @@ void mainWindow::getRTCTime() {
 }
 void mainWindow::sendRTCTime() {
     sendCommand("YRS"+QString("%1").arg(ui->RTCYear->value(), 5, 10, QChar('0')));
+    protocole->send_char('.');
     sendCommand("MTH"+QString("%1").arg(ui->RTCMonth->value(), 5, 10, QChar('0')));
+    protocole->send_char('.');
     sendCommand("DYS"+QString("%1").arg(ui->RTCDay->value(), 5, 10, QChar('0')));
+    protocole->send_char('.');
     sendCommand("HRS"+QString("%1").arg(ui->RTCHour->value(), 5, 10, QChar('0')));
+    protocole->send_char('.');
     sendCommand("MNS"+QString("%1").arg(ui->RTCMinute->value(), 5, 10, QChar('0')));
+    protocole->send_char('.');
     sendCommand("SEC"+QString("%1").arg(ui->RTCSecond->value(), 5, 10, QChar('0')));
+    protocole->send_char('.');
 }
 
 /*  Serial port buttons connects                    */
