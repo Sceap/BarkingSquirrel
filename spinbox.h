@@ -8,7 +8,7 @@ class SpinBox : public QSpinBox
     Q_OBJECT
 
 public:
-    SpinBox( ) : QSpinBox( ) {}
+    SpinBox( QWidget * parent) : QSpinBox( parent ) {}
 
 protected:
     virtual QString textFromValue(int value) const

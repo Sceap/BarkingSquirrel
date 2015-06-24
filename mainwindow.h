@@ -14,7 +14,17 @@
 #include "settingsdialog.h"
 #include "spinbox.h"
 
-class mainWindow : public QWidget
+QT_USE_NAMESPACE
+
+QT_BEGIN_NAMESPACE
+
+namespace Ui {
+class MainWindow;
+}
+
+QT_END_NAMESPACE
+
+class mainWindow : public QMainWindow
 {
 
 
@@ -36,6 +46,8 @@ class mainWindow : public QWidget
 
         void updateData();
     private:
+        Ui::MainWindow *ui;
+
         void updateXAxis(double value, double time);
         void updateYAxis(double value);
         void updateConsole(QString str);

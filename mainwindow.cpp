@@ -25,10 +25,16 @@
 ********************************************************************************************************************************/
 
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-mainWindow::mainWindow() : QWidget()
+mainWindow::mainWindow() : QMainWindow(),
+    ui(new Ui::MainWindow)
 {
     this->setMinimumSize(1000,500);
+    ui->setupUi(this);
+
+    ui->tabWidget->setCurrentIndex(0);
+
 
     /// Creating the logger file instance
     log = new QFile();
@@ -61,161 +67,31 @@ mainWindow::mainWindow() : QWidget()
     // be the exact length of the frame.
     protocole->setBufferedValue(67);
 
-    // Creating a textEdit in order to log datas
-    textEdit = new QTextEdit;
-    textEdit->setMaximumWidth(200);
-
-    // Creating a checkbox to allow logging in local file
-    logToFile = new QCheckBox;
-    logToFile->setChecked(false);
-    logToFile->setText("Log to file");
-
-    // Creating a lineedit for entering the local file's name
-    fileName = new QLineEdit;
-    fileName->setText("file_log");
-    QLabel * txt = new QLabel;
-    txt->setText(".txt");
-
-    // Creating a checkbox to allow appending the date to the file's name
-    appendDate = new QCheckBox;
-    appendDate->setText("Append date to filename");
-    appendDate->setChecked(false);
-
-
-    // Creating the different buttons used to connect to and
-    // configure the serial port
-    actionConnect = new QPushButton("Connect");
-    actionDisconnect = new QPushButton("Disconnect");
-    actionDisconnect->setEnabled(false);
-    actionConfigure = new QPushButton("Configure Port");
     initActionsConnections();
-
-
-    // Creating the layouts
-
-    // Screen layout is the main window layout
-    QVBoxLayout *screen = new QVBoxLayout;
-    // Toolbar is the top bar containing all the buttons
-    QHBoxLayout *toolbar = new QHBoxLayout;
-    QHBoxLayout *port_bar = new QHBoxLayout;
-    QHBoxLayout *log_bar = new QHBoxLayout;
-    QVBoxLayout *cmd_bar = new QVBoxLayout;
-    // Layout is everything below the toolbar, ordered horizontaly
-    QHBoxLayout *layout = new QHBoxLayout;
-    // The following layouts are for tabs
-    QHBoxLayout *accelerometer = new QHBoxLayout;
-    QHBoxLayout *advanced_cmd = new QHBoxLayout;
-
-    // The three select GroupBoxes allow a self-explanatory
-    // separation of the toolbar
-    QGroupBox * selectPort = new QGroupBox;
-    selectPort->setTitle("Serial Port");
-    QGroupBox * selectLog = new QGroupBox;
-    selectLog->setTitle("Log File");
-    QGroupBox * selectCmd = new QGroupBox;
-    selectCmd->setTitle("Send command");
-
-    // Those two nested layouts are used for the log file
-    // configuration
-    QVBoxLayout * log_zone = new QVBoxLayout;
-    QHBoxLayout * log_buttons = new QHBoxLayout;
-
-    // Those three nested layouts are used for the commands
-    QHBoxLayout * cmd_line1 = new QHBoxLayout;
-    QHBoxLayout * cmd_line2 = new QHBoxLayout;
 
     // Creating all the commands button
     QSignalMapper * cmdMap = new QSignalMapper(this);
 
-    QPushButton * stopButton = new QPushButton("STOP");
-    QPushButton * startButton = new QPushButton("START");
-    QPushButton * burstButton = new QPushButton("BURST");
-    QPushButton * streamButton = new QPushButton("STREAM");
-
-
-    connect(stopButton,SIGNAL(clicked()),cmdMap,SLOT(map()));
-    connect(startButton,SIGNAL(clicked()),cmdMap,SLOT(map()));
-    connect(burstButton,SIGNAL(clicked()),cmdMap,SLOT(map()));
-    connect(streamButton,SIGNAL(clicked()),cmdMap,SLOT(map()));
-    cmdMap -> setMapping (stopButton, "STO") ;
-    cmdMap -> setMapping (startButton, "STA") ;
-    cmdMap -> setMapping (burstButton, "BST") ;
-    cmdMap -> setMapping (streamButton, "STR") ;
+    connect(ui->cmdStop,SIGNAL(clicked()),cmdMap,SLOT(map()));
+    connect(ui->cmdStart,SIGNAL(clicked()),cmdMap,SLOT(map()));
+    connect(ui->cmdBurst,SIGNAL(clicked()),cmdMap,SLOT(map()));
+    connect(ui->cmdStream,SIGNAL(clicked()),cmdMap,SLOT(map()));
+    cmdMap -> setMapping (ui->cmdStop, "STO") ;
+    cmdMap -> setMapping (ui->cmdStart, "STA") ;
+    cmdMap -> setMapping (ui->cmdBurst, "BST") ;
+    cmdMap -> setMapping (ui->cmdStream, "STR") ;
     connect(cmdMap,SIGNAL(mapped(QString)),this,SLOT(sendCommandBox(QString)));
 
-    // Creating a SpinBox for the command value (must be numbers!)
-    QLabel * cmdLabel = new QLabel("Command value: ");
-    cmdValue = new QSpinBox;
-    cmdValue->setMinimum(0);
-    cmdValue->setMaximum(65535);
-    cmdValue->setValue(0);
 
-    // Creating a lineEdit for custom commands
-    QLabel * cmdCustomLabel = new QLabel("Custom command: ");
-    QLineEdit * cmdCustom = new QLineEdit;
-    QPushButton * cmdCustomSend = new QPushButton("Send");
+    connect(ui->sendTime,SIGNAL(clicked()),this,SLOT(sendRTCTime()));
+    connect(ui->getTime,SIGNAL(clicked()),this,SLOT(getRTCTime()));
+    connect(ui->syncSysTime,SIGNAL(clicked()),this,SLOT(getSysTime()));
 
-
-    // Configuring the layouts
-
-    // Adding every widget on the toolbar
-    port_bar->addWidget(actionConnect);
-    port_bar->addWidget(actionDisconnect);
-    port_bar->addWidget(actionConfigure);
-
-    log_buttons->addWidget(logToFile);
-    log_buttons->addWidget(appendDate);
-    log_zone->addWidget(fileName);
-    log_zone->addLayout(log_buttons);
-    log_bar->addLayout(log_zone);
-
-    cmd_line1->addWidget(startButton);
-    cmd_line1->addWidget(stopButton);
-    cmd_line1->addWidget(burstButton);
-    cmd_line1->addWidget(streamButton);
-    cmd_line1->addStretch(1);
-    cmd_line1->addWidget(cmdLabel);
-    cmd_line1->addWidget(cmdValue);
-
-    cmd_line2->addWidget(cmdCustomLabel);
-    cmd_line2->addWidget(cmdCustom);
-    cmd_line2->addWidget(cmdCustomSend);
-    cmd_line2->addStretch(1);
-
-    cmd_bar->addLayout(cmd_line1);
-    cmd_bar->addLayout(cmd_line2);
-
-    // Populating every select GroupBox
-    selectPort->setLayout(port_bar);
-    selectLog->setLayout(log_bar);
-    selectCmd->setLayout(cmd_bar);
-
-    // Adding the GroupBoxes to the toolbar
-    toolbar->addWidget(selectPort);
-    toolbar->addSpacing(32);
-    toolbar->addWidget(selectLog);
-    toolbar->addSpacing(32);
-    toolbar->addWidget(selectCmd);
-    toolbar->addStretch(1);
-
-
-    // Adding the textEdit (console) and the graphs
-    layout->addWidget(textEdit);
-
-    /********************************************************************************************
-    * Creating the different Tabs                                                               *
-    *                                                                                           *
-    * Tab 1 : Accelerometer X, Y and XY graph                                                   *
-    *                                                                                           *
-    ********************************************************************************************/
-
-    // Graph_layout contains multiple graphs vertically
-    QVBoxLayout *graph_layout = new QVBoxLayout;
 
     // Creating graphs instances
-    graph[0] = new QCustomPlot();
-    graph[1] = new QCustomPlot();
-    graph[2] = new QCustomPlot();
+    graph[0] = ui->graphXAxis;
+    graph[1] = ui->graphYAxis;
+    graph[2] = ui->graphXY;
 
     // The pen is used to draw a dot on XY graphs
     QPen pen;
@@ -285,117 +161,6 @@ mainWindow::mainWindow() : QWidget()
     graph[2]->setInteraction(QCP::iRangeZoom, true);
 
 
-    graph_layout->addWidget(graph[0]);
-    graph_layout->addWidget(graph[1]);
-    accelerometer->addLayout(graph_layout);
-    accelerometer->addWidget(graph[2]);
-
-
-    /********************************************************************************************
-    *                                                                                           *
-    * Tab 2 : Advanced Command management                                                       *
-    *                                                                                           *
-    ********************************************************************************************/
-
-    // Creating two columns for the display
-    QVBoxLayout * advanced_cmd_col1 = new QVBoxLayout;
-    QVBoxLayout * advanced_cmd_col2 = new QVBoxLayout;
-
-    // Created a groupbox for the RTC configuration
-    QGroupBox * RTCBox = new QGroupBox;
-    RTCBox->setTitle("Configure RTC");
-
-    QVBoxLayout * RTCLayout = new QVBoxLayout;
-    QHBoxLayout * RTCSpins = new QHBoxLayout;
-    QHBoxLayout * RTCButtons = new QHBoxLayout;
-
-    RTCYear = new SpinBox;
-    RTCYear->setRange(0,99);
-    RTCYear->setValue(15);
-    RTCMonth = new SpinBox;
-    RTCMonth->setRange(1,12);
-    RTCMonth->setValue(1);
-    RTCDay = new SpinBox;
-    RTCDay->setRange(0,31);
-    RTCDay->setValue(1);
-    RTCHour = new SpinBox;
-    RTCHour->setRange(0,24);
-    RTCHour->setValue(0);
-    RTCMinute = new SpinBox;
-    RTCMinute->setRange(0,59);
-    RTCMinute->setValue(0);
-    RTCSecond = new SpinBox;
-    RTCSecond->setRange(0,59);
-    RTCSecond->setValue(0);
-    RTCSpins->addStretch(1);
-    RTCSpins->addWidget(new QLabel("Year"));
-    RTCSpins->addWidget(RTCYear);
-    RTCSpins->addSpacing(10);
-    RTCSpins->addWidget(new QLabel("Month"));
-    RTCSpins->addWidget(RTCMonth);
-    RTCSpins->addSpacing(10);
-    RTCSpins->addWidget(new QLabel("Day"));
-    RTCSpins->addWidget(RTCDay);
-    RTCSpins->addSpacing(50);
-    RTCSpins->addWidget(new QLabel("Time"));
-    RTCSpins->addWidget(RTCHour);
-    RTCSpins->addWidget(new QLabel(":"));
-    RTCSpins->addWidget(RTCMinute);
-    RTCSpins->addWidget(new QLabel(":"));
-    RTCSpins->addWidget(RTCSecond);
-    RTCSpins->addStretch(1);
-    QPushButton * RTCSend = new QPushButton("Send");
-    QPushButton * RTCGet = new QPushButton("Get RTC time");
-    QPushButton * RTCSysGet = new QPushButton("Get system time");
-    connect(RTCSend,SIGNAL(clicked()),this,SLOT(sendRTCTime()));
-    connect(RTCGet,SIGNAL(clicked()),this,SLOT(getRTCTime()));
-    connect(RTCSysGet,SIGNAL(clicked()),this,SLOT(getSysTime()));
-    RTCButtons->addStretch(1);
-    RTCButtons->addWidget(RTCSysGet);
-    RTCButtons->addWidget(RTCGet);
-    RTCButtons->addSpacing(32);
-    RTCButtons->addWidget(RTCSend);
-    RTCButtons->addStretch(1);
-
-    RTCLayout->addLayout(RTCSpins);
-    RTCLayout->addStretch(1);
-    RTCLayout->addLayout(RTCButtons);
-    RTCBox->setLayout(RTCLayout);
-
-
-    advanced_cmd_col1->addWidget(RTCBox,1);
-    advanced_cmd_col1->addStretch(8);
-
-
-    // Adding the two columns to the tab
-    advanced_cmd->addLayout(advanced_cmd_col1,1);
-    advanced_cmd->addLayout(advanced_cmd_col2,1);
-
-
-    // Creating the tab widget
-    QTabWidget * screenTab = new QTabWidget(this);
-    // Creating the different tabs
-    QWidget * accelerometerTab = new QWidget;
-    QWidget * advancedCommandTab = new QWidget;
-
-    // Setting the tabs layouts
-    accelerometerTab->setLayout(accelerometer);
-    advancedCommandTab->setLayout(advanced_cmd);
-
-    // Adding the tabs to the tab widget
-    screenTab->addTab(accelerometerTab,QString("Accelerometer"));
-    screenTab->addTab(advancedCommandTab,QString("Advanced Commands"));
-
-    // Adding the tab widget to the main layout
-    layout->addWidget(screenTab);
-
-    // Adding everything in the main layout
-    screen->addLayout(toolbar);
-    screen->addLayout(layout);
-
-    // Addding the layout to the Window
-    setLayout(screen);
-
     // Addding Window's title
     setWindowTitle("Doctor's Order Data Logger");
 
@@ -458,9 +223,9 @@ void mainWindow::updateData() {
     QString date = QDateTime::currentDateTime().toString("_MM_dd_yyyy");
 
     // Opening a log file if required
-    if(logToFile->isChecked()) {
+    if(ui->logToFile->isChecked()) {
         // Adding the date to the name if needed
-        if(appendDate->isChecked())
+        if(ui->appendDate->isChecked())
             log = new QFile(fileName->text()+date+".txt");
         else
             log = new QFile(fileName->text()+".txt");
@@ -483,7 +248,7 @@ void mainWindow::updateData() {
             updateYAxis(protocole->values[5].at(lastString));
             updateXAxis(protocole->values[4].at(lastString),0);
             updateConsole(protocole->strings.at(lastString++));
-            if(logToFile->isChecked())
+            if(ui->logToFile->isChecked())
             log->write(protocole->strings.at(lastString).toLatin1()+"\n");
         }
 
@@ -503,12 +268,12 @@ void mainWindow::updateData() {
     updateXAxis(protocole->lastValue[4],getDate(protocole->lastString));
     updateConsole(protocole->lastString);
 
-    if(logToFile->isChecked())
+    if(ui->logToFile->isChecked())
     log->write(protocole->lastString.toLatin1()+"\n");
 #endif
 
     // Closing the file if it had been opened
-    if(logToFile->isChecked())
+    if(ui->logToFile->isChecked())
     log->close();
 }
 
@@ -520,43 +285,44 @@ void mainWindow::sendCommand(QString cmd) {
 }
 
 void mainWindow::sendCommandBox(QString cmd) {
-    QString number = QString("%1").arg(cmdValue->value(), 5, 10, QChar('0'));
+    QString number = QString("%1").arg(ui->cmdValue->value(), 5, 10, QChar('0'));
     sendCommand(QString(cmd+number));
 }
 
 void mainWindow::getSysTime() {
     QDateTime now = QDateTime::currentDateTime();
-    RTCYear->setValue(now.date().toString("yy").toInt());
-    RTCMonth->setValue(now.date().toString("MM").toInt());
-    RTCDay->setValue(now.date().toString("dd").toInt());
-    RTCHour->setValue(now.time().toString("hh").toInt());
-    RTCMinute->setValue(now.time().toString("mm").toInt());
-    RTCSecond->setValue(now.time().toString("ss").toInt());
+    ui->RTCYear->setValue(now.date().toString("yy").toInt());
+    ui->RTCMonth->setValue(now.date().toString("MM").toInt());
+    ui->RTCDay->setValue(now.date().toString("dd").toInt());
+    ui->RTCHour->setValue(now.time().toString("hh").toInt());
+    ui->RTCMinute->setValue(now.time().toString("mm").toInt());
+    ui->RTCSecond->setValue(now.time().toString("ss").toInt());
+    sendRTCTime();
 }
 void mainWindow::getRTCTime() {
     QString now = protocole->lastString;
-    RTCYear->setValue(now.mid(3,2).toInt());
-    RTCMonth->setValue(now.mid(5,2).toInt());
-    RTCDay->setValue(now.mid(7,2).toInt());
-    RTCHour->setValue(now.mid(9,2).toInt());
-    RTCMinute->setValue(now.mid(11,2).toInt());
-    RTCSecond->setValue(now.mid(13,2).toInt());
+    ui->RTCYear->setValue(now.mid(3,2).toInt());
+    ui->RTCMonth->setValue(now.mid(5,2).toInt());
+    ui->RTCDay->setValue(now.mid(7,2).toInt());
+    ui->RTCHour->setValue(now.mid(9,2).toInt());
+    ui->RTCMinute->setValue(now.mid(11,2).toInt());
+    ui->RTCSecond->setValue(now.mid(13,2).toInt());
 }
 void mainWindow::sendRTCTime() {
-    sendCommand("YRS"+QString("%1").arg(RTCYear->value(), 5, 10, QChar('0')));
-    sendCommand("MTH"+QString("%1").arg(RTCMonth->value(), 5, 10, QChar('0')));
-    sendCommand("DYS"+QString("%1").arg(RTCDay->value(), 5, 10, QChar('0')));
-    sendCommand("HRS"+QString("%1").arg(RTCHour->value(), 5, 10, QChar('0')));
-    sendCommand("MNS"+QString("%1").arg(RTCMinute->value(), 5, 10, QChar('0')));
-    sendCommand("SEC"+QString("%1").arg(RTCSecond->value(), 5, 10, QChar('0')));
+    sendCommand("YRS"+QString("%1").arg(ui->RTCYear->value(), 5, 10, QChar('0')));
+    sendCommand("MTH"+QString("%1").arg(ui->RTCMonth->value(), 5, 10, QChar('0')));
+    sendCommand("DYS"+QString("%1").arg(ui->RTCDay->value(), 5, 10, QChar('0')));
+    sendCommand("HRS"+QString("%1").arg(ui->RTCHour->value(), 5, 10, QChar('0')));
+    sendCommand("MNS"+QString("%1").arg(ui->RTCMinute->value(), 5, 10, QChar('0')));
+    sendCommand("SEC"+QString("%1").arg(ui->RTCSecond->value(), 5, 10, QChar('0')));
 }
 
 /*  Serial port buttons connects                    */
 void mainWindow::initActionsConnections()
 {
-    connect(actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
-    connect(actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
-    connect(actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
+    connect(ui->actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
+    connect(ui->actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
+    connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
 }
 
 
@@ -624,10 +390,10 @@ void mainWindow::updateYAxis(double value) {
 void mainWindow::updateConsole(QString str) {
     static int log = 0;
 
-    textEdit->append(str+"\n");
+    ui->logConsole->append(str+"\n");
 
     if(!log) {
-        textEdit->clear();
+        ui->logConsole->clear();
     }
     log = (log+1)%2000;
 }
@@ -646,9 +412,9 @@ void mainWindow::openSerialPort()
     protocole->port->setStopBits(p.stopBits);
     protocole->port->setFlowControl(p.flowControl);
     if (protocole->port->open(QIODevice::ReadWrite)) {
-        actionConnect->setEnabled(false);
-        actionDisconnect->setEnabled(true);
-        actionConfigure->setEnabled(false);
+        ui->actionConnect->setEnabled(false);
+        ui->actionDisconnect->setEnabled(true);
+        ui->actionConfigure->setEnabled(false);
     } else {
         QMessageBox::critical(this, tr("Error"), protocole->port->errorString());
     }
@@ -663,7 +429,7 @@ void mainWindow::closeSerialPort()
 
     if (protocole->port->isOpen())
         protocole->port->close();
-    actionConnect->setEnabled(true);
-    actionDisconnect->setEnabled(false);
-    actionConfigure->setEnabled(true);
+    ui->actionConnect->setEnabled(true);
+    ui->actionDisconnect->setEnabled(false);
+    ui->actionConfigure->setEnabled(true);
 }
