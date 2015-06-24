@@ -9,6 +9,13 @@
 
 #include <QSerialPort>
 
+
+// 1 :  Variable Length, can cause random crashes but can be used with
+//      frames of unknown/variables lengths
+// 0 :  Fixed Length (recommended), more robust and quicker, must set the
+//      BufferedValue to the exact length of the frame to detect
+#define VARIABLE_LENGTH 0
+
 class Protocole : public QThread
 {
     Q_OBJECT

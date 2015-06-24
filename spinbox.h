@@ -1,0 +1,22 @@
+#ifndef SPINBOX_H
+#define SPINBOX_H
+
+#include <QSpinBox>
+
+class SpinBox : public QSpinBox
+{
+    Q_OBJECT
+
+public:
+    SpinBox( ) : QSpinBox( ) {}
+
+protected:
+    virtual QString textFromValue(int value) const
+    {
+        return QString("%1").arg(value, 2, 10, QLatin1Char('0'));
+    }
+};
+
+
+#endif // SPINBOX_H
+

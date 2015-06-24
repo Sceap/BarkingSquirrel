@@ -12,20 +12,27 @@
 #include "qcustomplot.h"
 #include "protocole.h"
 #include "settingsdialog.h"
-#include "logdialog.h"
-
+#include "spinbox.h"
 
 class mainWindow : public QWidget
 {
+
+
     Q_OBJECT
 
     public:
         mainWindow();
 
     public slots:
-        void startStop();
         void openSerialPort();
         void closeSerialPort();
+
+        void sendCommand(QString cmd);
+        void sendCommandBox(QString cmd);
+
+        void getSysTime();
+        void getRTCTime();
+        void sendRTCTime();
 
         void updateData();
     private:
@@ -45,6 +52,8 @@ class mainWindow : public QWidget
         QPushButton * actionConnect, * actionDisconnect, * actionQuit, * actionConfigure, * actionLog, * stopStart;
         QCheckBox * logToFile, * appendDate;
         QLineEdit * fileName;
+        QSpinBox * cmdValue;
+        SpinBox * RTCYear, * RTCMonth, * RTCDay, * RTCHour, * RTCMinute,* RTCSecond;
 
         QVector<double> *x[10], *y[10];
 
