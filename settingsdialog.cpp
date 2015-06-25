@@ -38,6 +38,7 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QIntValidator>
 #include <QLineEdit>
+#include <QDebug>
 
 QT_USE_NAMESPACE
 
@@ -95,6 +96,7 @@ void SettingsDialog::showPortInfo(int idx)
 void SettingsDialog::apply()
 {
     updateSettings();
+    emit updated();
     hide();
 }
 
@@ -115,6 +117,93 @@ void SettingsDialog::checkCustomDevicePathPolicy(int idx)
     ui->serialPortInfoListBox->setEditable(isCustomPath);
     if (isCustomPath)
         ui->serialPortInfoListBox->clearEditText();
+}
+
+void SettingsDialog::setDefaults(QSerialPort * port) {
+    for(int i=0;i<ui->serialPortInfoListBox->count();i++)
+        if(ui->serialPortInfoListBox->itemText(i) == port->portName()) {
+            ui->serialPortInfoListBox->setCurrentIndex(i);
+        }
+    switch(port->baudRate()) {
+        case QSerialPort::Baud9600:
+            ui->baudRateBox->setCurrentIndex(0);
+            break;
+        case QSerialPort::Baud19200:
+            ui->baudRateBox->setCurrentIndex(1);
+            break;
+        case QSerialPort::Baud38400:
+            ui->baudRateBox->setCurrentIndex(2);
+            break;
+        case QSerialPort::Baud115200:
+            ui->baudRateBox->setCurrentIndex(3);
+            break;
+        default:
+            break;
+    }
+    switch(port->dataBits()) {
+        case QSerialPort::Data5:
+            ui->dataBitsBox->setCurrentIndex(0);
+            break;
+        case QSerialPort::Data6:
+            ui->dataBitsBox->setCurrentIndex(1);
+            break;
+        case QSerialPort::Data7:
+            ui->dataBitsBox->setCurrentIndex(2);
+            break;
+        case QSerialPort::Data8:
+            ui->dataBitsBox->setCurrentIndex(3);
+            break;
+        default:
+            break;
+    }
+    switch(port->parity()) {
+        case QSerialPort::NoParity:
+            ui->parityBox->setCurrentIndex(0);
+            break;
+        case QSerialPort::EvenParity:
+            ui->parityBox->setCurrentIndex(1);
+            break;
+        case QSerialPort::OddParity:
+            ui->parityBox->setCurrentIndex(2);
+            break;
+        case QSerialPort::MarkParity:
+            ui->parityBox->setCurrentIndex(3);
+            break;
+        case QSerialPort::SpaceParity:
+            ui->parityBox->setCurrentIndex(4);
+            break;
+        default:
+            break;
+    }
+    switch(port->stopBits()) {
+        case QSerialPort::OneStop:
+            ui->stopBitsBox->setCurrentIndex(0);
+            break;
+        case QSerialPort::OneAndHalfStop:
+            ui->stopBitsBox->setCurrentIndex(1);
+            break;
+        case QSerialPort::TwoStop:
+            ui->stopBitsBox->setCurrentIndex(2);
+            break;
+        default:
+            break;
+    }
+    switch(port->flowControl()) {
+        case QSerialPort::NoFlowControl:
+            ui->flowControlBox->setCurrentIndex(0);
+            break;
+        case QSerialPort::HardwareControl:
+            ui->flowControlBox->setCurrentIndex(1);
+            break;
+        case QSerialPort::SoftwareControl:
+            ui->flowControlBox->setCurrentIndex(2);
+            break;
+        default:
+            break;
+    }
+
+
+    updateSettings();
 }
 
 void SettingsDialog::fillPortsParameters()

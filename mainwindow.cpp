@@ -35,9 +35,14 @@ mainWindow::mainWindow() : QMainWindow(),
 
     ui->tabWidget->setCurrentIndex(0);
     ui->fileName->setText("log_file");
+    ui->actionDisconnect->setEnabled(false);
 
-    /// Creating the logger file instance
+    // Creating the logger file instance
     log = new QFile();
+
+    // Creating the session file instance
+    session = new QFile("session.dat");
+
 
     // Creating the QVector of double needed to store the graphs
     // points
@@ -54,8 +59,11 @@ mainWindow::mainWindow() : QMainWindow(),
     // The Protocole instance handles the communication through the selected
     // serial port and parses the data received through a RegEx string
     protocole = new Protocole();
+
     protocole->addValues(8);
 
+
+    restoreSession();
 
     // Set how much bytes Port has to read before
     // taking them into account.
@@ -65,19 +73,17 @@ mainWindow::mainWindow() : QMainWindow(),
     //
     // When using Fixed Length frames, the value should
     // be the exact length of the frame.
-    protocole->setBufferedValue(67);
+    protocole->setBufferedValue(68);
 
     initActionsConnections();
 
     // Creating all the commands button
     QSignalMapper * cmdMap = new QSignalMapper(this);
 
-    connect(ui->cmdStop,SIGNAL(clicked()),cmdMap,SLOT(map()));
-    connect(ui->cmdStart,SIGNAL(clicked()),cmdMap,SLOT(map()));
+    connect(ui->cmdFreq,SIGNAL(clicked()),cmdMap,SLOT(map()));
     connect(ui->cmdBurst,SIGNAL(clicked()),cmdMap,SLOT(map()));
     connect(ui->cmdStream,SIGNAL(clicked()),cmdMap,SLOT(map()));
-    cmdMap -> setMapping (ui->cmdStop, "STO") ;
-    cmdMap -> setMapping (ui->cmdStart, "STA") ;
+    cmdMap -> setMapping (ui->cmdFreq, "FRQ") ;
     cmdMap -> setMapping (ui->cmdBurst, "BST") ;
     cmdMap -> setMapping (ui->cmdStream, "STR") ;
     connect(cmdMap,SIGNAL(mapped(QString)),this,SLOT(sendCommandBox(QString)));
@@ -175,8 +181,17 @@ mainWindow::mainWindow() : QMainWindow(),
         graph[i]->yAxis->setSubTickPen(QPen(QColor(195,195,195)));
     }
 
+    connect(ui->appendDate,SIGNAL(stateChanged(int)),this,SLOT(saveSession()));
+    connect(ui->logToFile,SIGNAL(stateChanged(int)),this,SLOT(saveSession()));
+    connect(ui->fileName,SIGNAL(textChanged(QString)),this,SLOT(saveSession()));
+    connect(ui->cmdValue,SIGNAL(valueChanged(int)),this,SLOT(saveSession()));
+    connect(settings,SIGNAL(updated()),this,SLOT(saveSession()));
+
     // Addding Window's title
     setWindowTitle("Doctor's Order Data Logger");
+
+
+    connect(this,SIGNAL(resync()),protocole,SLOT(resync()));
 
 #if VARIABLE_LENGTH == 1
     // Starting a Timer for graph updates
@@ -187,6 +202,43 @@ mainWindow::mainWindow() : QMainWindow(),
 #else
     connect(protocole,SIGNAL(updateData()),this,SLOT(updateData()));
 #endif
+}
+
+
+void mainWindow::restoreSession() {
+    session->open(QIODevice::ReadOnly);
+    QTextStream sessionLine(session);
+
+    ui->fileName->setText(sessionLine.readLine());
+    ui->logToFile->setChecked(((QString(sessionLine.readLine()) == "true") ? true : false));
+    ui->appendDate->setChecked(((QString(sessionLine.readLine()) == "true") ? true : false));
+    ui->cmdValue->setValue(sessionLine.readLine().toShort());
+    protocole->port->setPortName(QString(sessionLine.readLine()));
+    protocole->port->setBaudRate(sessionLine.readLine().toLong());
+    protocole->port->setDataBits((QSerialPort::DataBits)sessionLine.readLine().toInt());
+    protocole->port->setParity((QSerialPort::Parity)sessionLine.readLine().toShort());
+    protocole->port->setStopBits((QSerialPort::StopBits)sessionLine.readLine().toShort());
+    protocole->port->setFlowControl((QSerialPort::FlowControl)sessionLine.readLine().toShort());
+    settings->setDefaults(protocole->port);
+    session->close();
+}
+
+void mainWindow::saveSession() {
+    session->open(QIODevice::WriteOnly);
+    QTextStream sessionLine(session);
+
+    sessionLine << ui->fileName->text() << endl;
+    sessionLine << (ui->logToFile->isChecked()?"true":"false") << endl;
+    sessionLine << (ui->appendDate->isChecked()?"true":"false") << endl;
+    sessionLine << (ui->cmdValue->value()) << endl;
+    sessionLine << settings->settings().name << endl;
+    sessionLine << settings->settings().baudRate << endl;
+    sessionLine << settings->settings().dataBits << endl;
+    sessionLine << settings->settings().parity << endl;
+    sessionLine << settings->settings().stopBits << endl;
+    sessionLine << settings->settings().flowControl << endl;
+
+    session->close();
 }
 
 
@@ -221,6 +273,7 @@ double getDate(QString date) {
 
     return hour*3600+minute*60+sec*1+csec*.01;
 }
+
 
 /*  updateData is a Slot that can either be called  */
 /*  periodically through a Timer, or directly from  */
@@ -439,7 +492,8 @@ void mainWindow::openSerialPort()
         QMessageBox::critical(this, tr("Error"), protocole->port->errorString());
     }
 
-    protocole->start();
+    if(protocole->port->isOpen())
+        protocole->start();
 }
 
 /*  CloseSerialPort closes a currently open port    */

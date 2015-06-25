@@ -162,16 +162,9 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <widget class="QPushButton" name="cmdStart">
+              <widget class="QPushButton" name="cmdFreq">
                <property name="text">
-                <string>START</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="cmdStop">
-               <property name="text">
-                <string>STOP</string>
+                <string>FREQUENCY</string>
                </property>
               </widget>
              </item>

@@ -120,7 +120,7 @@ void Protocole::run()
     static QByteArray ba;
     while(1)
     {
-        if(port->bytesAvailable()>=bufferedValue)
+        if(port->bytesAvailable()>=bufferedValue+10)
         {
 #if VARIABLE_LENGTH == 1
             decal += port->readLine(buff+decal,port->bytesAvailable()+1);
@@ -163,9 +163,7 @@ void Protocole::run()
         } else {
            port->readAll();
         }
-#ifndef VARIABLE_LENGHT
         }
-#endif
     }
 }
 

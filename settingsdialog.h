@@ -69,6 +69,8 @@ public:
         QString stringFlowControl;
     };
 
+    void setDefaults(QSerialPort * port);
+
     explicit SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
 
@@ -89,6 +91,9 @@ private:
     Ui::SettingsDialog *ui;
     Settings currentSettings;
     QIntValidator *intValidator;
+
+signals:
+    void updated();
 };
 
 #endif // SETTINGSDIALOG_H

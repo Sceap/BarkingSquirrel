@@ -59,8 +59,7 @@ public:
     QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_6;
-    QPushButton *cmdStart;
-    QPushButton *cmdStop;
+    QPushButton *cmdFreq;
     QPushButton *cmdBurst;
     QPushButton *cmdStream;
     QLabel *label_2;
@@ -245,15 +244,10 @@ public:
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
-        cmdStart = new QPushButton(groupBox_3);
-        cmdStart->setObjectName(QStringLiteral("cmdStart"));
+        cmdFreq = new QPushButton(groupBox_3);
+        cmdFreq->setObjectName(QStringLiteral("cmdFreq"));
 
-        horizontalLayout_6->addWidget(cmdStart);
-
-        cmdStop = new QPushButton(groupBox_3);
-        cmdStop->setObjectName(QStringLiteral("cmdStop"));
-
-        horizontalLayout_6->addWidget(cmdStop);
+        horizontalLayout_6->addWidget(cmdFreq);
 
         cmdBurst = new QPushButton(groupBox_3);
         cmdBurst->setObjectName(QStringLiteral("cmdBurst"));
@@ -650,8 +644,7 @@ public:
         logToFile->setText(QApplication::translate("MainWindow", "Log to file", 0));
         appendDate->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Send command", 0));
-        cmdStart->setText(QApplication::translate("MainWindow", "START", 0));
-        cmdStop->setText(QApplication::translate("MainWindow", "STOP", 0));
+        cmdFreq->setText(QApplication::translate("MainWindow", "FREQUENCY", 0));
         cmdBurst->setText(QApplication::translate("MainWindow", "BURST", 0));
         cmdStream->setText(QApplication::translate("MainWindow", "STREAM", 0));
         label_2->setText(QApplication::translate("MainWindow", "Command value:", 0));

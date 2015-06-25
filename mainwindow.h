@@ -26,6 +26,18 @@ QT_END_NAMESPACE
 
 class mainWindow : public QMainWindow
 {
+    enum sessionSettings {
+        FILENAME = 0,
+        LOGTOFILE = 1,
+        APPENDDATE = 2,
+        CMDVALUE = 3,
+        PORT = 4,
+        BAUDRATE = 5,
+        DATABITS = 6,
+        PARITY = 7,
+        STOPBITS = 8,
+        FLOWCONTROL = 9
+    };
 
 
     Q_OBJECT
@@ -36,6 +48,8 @@ class mainWindow : public QMainWindow
     public slots:
         void openSerialPort();
         void closeSerialPort();
+
+        void saveSession();
 
         void sendCommand(QString cmd);
         void sendCommandBox(QString cmd);
@@ -51,6 +65,7 @@ class mainWindow : public QMainWindow
         void updateXAxis(double value, double time);
         void updateYAxis(double value);
         void updateConsole(QString str);
+        void restoreSession();
 
         void initActionsConnections();
 
@@ -63,6 +78,10 @@ class mainWindow : public QMainWindow
         QVector<double> *x[10], *y[10];
 
         QFile * log;
+        QFile * session;
+
+    signals:
+        void resync();
 };
 
 #endif // MAINWINDOW_H
