@@ -125,7 +125,7 @@ mainWindow::mainWindow() : QMainWindow(),
     // Graph 1 to 6 stores the accelerometer and gyroscope
     // axis, and share similar settings.
     // Their label can be set directly in the next array
-    char * label[16] = {
+    QString label[16] = {
         "",
         "X","Y","Z",    // Accelerometer's three axis
         "X","Y","Z"     // Gyroscope's three axis

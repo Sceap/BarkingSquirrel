@@ -281,7 +281,7 @@ void Protocole::fetch() {
 // Sends a string through the serial port
 void Protocole::send_str(const char  *str) {
     char buff;
-    while(buff=*(str++))
+    while((buff=*(str++)))
         port->putChar(buff);
 }
 

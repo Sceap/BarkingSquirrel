@@ -1,9 +1,7 @@
 #ifndef PROTOCOLE_H
 #define PROTOCOLE_H
 
-#include <QThread>
-#include <QTimer>
-#include <QVector>
+#include <QWidget>
 #include <QRegExp>
 #include <QString>
 
@@ -16,7 +14,7 @@
 //      BufferedValue to the exact length of the frame to detect
 #define VARIABLE_LENGTH 0
 
-class Protocole : public QThread
+class Protocole : public QWidget
 {
     Q_OBJECT
 
@@ -54,16 +52,7 @@ class Protocole : public QThread
     private slots:
         void fetch();
 
-
-    protected:
-        void run();
-
     signals:
-        void dataRec(QString buff);
-        void sensorChanged(int n, int value);
-        void posChanged(qreal x, qreal y, qreal t);
-        void dataSin(double d, double t);
-        void dataCos(double d);
         void updateData();
 };
 
