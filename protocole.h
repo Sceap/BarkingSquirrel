@@ -44,10 +44,15 @@ class Protocole : public QThread
         double lastValue[16];
         QString lastString;
 
+        bool synced;
+
     private:
         QRegExp *rx;
         QString oldPattern;
         int bufferedValue;
+
+    private slots:
+        void fetch();
 
 
     protected:

@@ -21,12 +21,12 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "qcustomplot.h"
@@ -81,14 +81,26 @@ public:
     QSpacerItem *horizontalSpacer_25;
     QSpacerItem *horizontalSpacer;
     QHBoxLayout *horizontalLayout_2;
-    QTextEdit *logConsole;
+    QVBoxLayout *verticalLayout_8;
+    QPushButton *logUpdate;
+    QPlainTextEdit *logConsole;
+    QSpacerItem *horizontalSpacer_38;
     QTabWidget *tabWidget;
     QWidget *tab;
     QHBoxLayout *horizontalLayout_9;
     QVBoxLayout *verticalLayout_3;
     QCustomPlot *graphXAxis;
     QCustomPlot *graphYAxis;
+    QCustomPlot *graphZAxis;
     QCustomPlot *graphXY;
+    QWidget *tab_3;
+    QHBoxLayout *horizontalLayout_7;
+    QVBoxLayout *verticalLayout_9;
+    QCustomPlot *gyroX;
+    QCustomPlot *gyroY;
+    QVBoxLayout *verticalLayout_10;
+    QCustomPlot *gyroZ;
+    QWidget *widget;
     QWidget *tab_2;
     QHBoxLayout *horizontalLayout_10;
     QVBoxLayout *verticalLayout_4;
@@ -154,11 +166,12 @@ public:
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
         groupBox->setSizePolicy(sizePolicy);
+        groupBox->setMaximumSize(QSize(250, 16777215));
         groupBox->setStyleSheet(QStringLiteral(""));
         horizontalLayout_4 = new QHBoxLayout(groupBox);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
@@ -186,19 +199,22 @@ public:
 
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        sizePolicy.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
-        groupBox_2->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
+        groupBox_2->setSizePolicy(sizePolicy1);
         verticalLayout = new QVBoxLayout(groupBox_2);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout_13 = new QHBoxLayout();
         horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
         fileName = new QLineEdit(groupBox_2);
         fileName->setObjectName(QStringLiteral("fileName"));
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(1);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(fileName->sizePolicy().hasHeightForWidth());
-        fileName->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(1);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(fileName->sizePolicy().hasHeightForWidth());
+        fileName->setSizePolicy(sizePolicy2);
 
         horizontalLayout_13->addWidget(fileName);
 
@@ -236,8 +252,8 @@ public:
 
         groupBox_3 = new QGroupBox(centralwidget);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        sizePolicy.setHeightForWidth(groupBox_3->sizePolicy().hasHeightForWidth());
-        groupBox_3->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(groupBox_3->sizePolicy().hasHeightForWidth());
+        groupBox_3->setSizePolicy(sizePolicy1);
         horizontalLayout_5 = new QHBoxLayout(groupBox_3);
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
         verticalLayout_2 = new QVBoxLayout();
@@ -352,24 +368,47 @@ public:
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        logConsole = new QTextEdit(centralwidget);
-        logConsole->setObjectName(QStringLiteral("logConsole"));
-        logConsole->setEnabled(true);
-        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Expanding);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(logConsole->sizePolicy().hasHeightForWidth());
-        logConsole->setSizePolicy(sizePolicy2);
-        logConsole->setMaximumSize(QSize(200, 16777215));
-        logConsole->setStyleSheet(QLatin1String("QPushButton {\n"
-"	background-color: #FFFFFF;\n"
-"}"));
+        verticalLayout_8 = new QVBoxLayout();
+        verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
+        verticalLayout_8->setContentsMargins(-1, -1, 0, -1);
+        logUpdate = new QPushButton(centralwidget);
+        logUpdate->setObjectName(QStringLiteral("logUpdate"));
+        logUpdate->setEnabled(true);
+        QSizePolicy sizePolicy3(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(logUpdate->sizePolicy().hasHeightForWidth());
+        logUpdate->setSizePolicy(sizePolicy3);
+        logUpdate->setMinimumSize(QSize(0, 10));
+        logUpdate->setMaximumSize(QSize(246, 64));
+        logUpdate->setBaseSize(QSize(0, 32));
 
-        horizontalLayout_2->addWidget(logConsole);
+        verticalLayout_8->addWidget(logUpdate);
+
+        logConsole = new QPlainTextEdit(centralwidget);
+        logConsole->setObjectName(QStringLiteral("logConsole"));
+        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(logConsole->sizePolicy().hasHeightForWidth());
+        logConsole->setSizePolicy(sizePolicy4);
+        logConsole->setMaximumSize(QSize(246, 16777215));
+
+        verticalLayout_8->addWidget(logConsole);
+
+
+        horizontalLayout_2->addLayout(verticalLayout_8);
+
+        horizontalSpacer_38 = new QSpacerItem(13, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer_38);
 
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setTabPosition(QTabWidget::North);
         tabWidget->setTabShape(QTabWidget::Rounded);
+        tabWidget->setElideMode(Qt::ElideNone);
+        tabWidget->setMovable(false);
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         horizontalLayout_9 = new QHBoxLayout(tab);
@@ -386,6 +425,11 @@ public:
 
         verticalLayout_3->addWidget(graphYAxis);
 
+        graphZAxis = new QCustomPlot(tab);
+        graphZAxis->setObjectName(QStringLiteral("graphZAxis"));
+
+        verticalLayout_3->addWidget(graphZAxis);
+
 
         horizontalLayout_9->addLayout(verticalLayout_3);
 
@@ -395,6 +439,41 @@ public:
         horizontalLayout_9->addWidget(graphXY);
 
         tabWidget->addTab(tab, QString());
+        tab_3 = new QWidget();
+        tab_3->setObjectName(QStringLiteral("tab_3"));
+        horizontalLayout_7 = new QHBoxLayout(tab_3);
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        verticalLayout_9 = new QVBoxLayout();
+        verticalLayout_9->setObjectName(QStringLiteral("verticalLayout_9"));
+        gyroX = new QCustomPlot(tab_3);
+        gyroX->setObjectName(QStringLiteral("gyroX"));
+
+        verticalLayout_9->addWidget(gyroX);
+
+        gyroY = new QCustomPlot(tab_3);
+        gyroY->setObjectName(QStringLiteral("gyroY"));
+
+        verticalLayout_9->addWidget(gyroY);
+
+
+        horizontalLayout_7->addLayout(verticalLayout_9);
+
+        verticalLayout_10 = new QVBoxLayout();
+        verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
+        gyroZ = new QCustomPlot(tab_3);
+        gyroZ->setObjectName(QStringLiteral("gyroZ"));
+
+        verticalLayout_10->addWidget(gyroZ);
+
+        widget = new QWidget(tab_3);
+        widget->setObjectName(QStringLiteral("widget"));
+
+        verticalLayout_10->addWidget(widget);
+
+
+        horizontalLayout_7->addLayout(verticalLayout_10);
+
+        tabWidget->addTab(tab_3, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
         horizontalLayout_10 = new QHBoxLayout(tab_2);
@@ -403,11 +482,11 @@ public:
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         groupBox_4 = new QGroupBox(tab_2);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
-        groupBox_4->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
+        groupBox_4->setSizePolicy(sizePolicy5);
         verticalLayout_6 = new QVBoxLayout(groupBox_4);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         horizontalLayout_11 = new QHBoxLayout();
@@ -650,7 +729,9 @@ public:
         label_2->setText(QApplication::translate("MainWindow", "Command value:", 0));
         label->setText(QApplication::translate("MainWindow", "Custom command: ", 0));
         cmdCustomSend->setText(QApplication::translate("MainWindow", "Send", 0));
+        logUpdate->setText(QApplication::translate("MainWindow", "Fetch frames", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Accelerometer", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Gyroscope", 0));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Configure RTC", 0));
         label_3->setText(QApplication::translate("MainWindow", "Year", 0));
         label_4->setText(QApplication::translate("MainWindow", "Month", 0));

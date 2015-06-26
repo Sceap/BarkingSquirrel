@@ -46,11 +46,18 @@ mainWindow::mainWindow() : QMainWindow(),
 
     // Creating the QVector of double needed to store the graphs
     // points
-    x[0] = new QVector<double>(100);
-    y[0] = new QVector<double>(100);
+    y[0] = new QVector<double>(2);
+    x[0] = new QVector<double>(2);
+
+    x[1] = new QVector<double>(100);
+
     y[1] = new QVector<double>(100);
-    y[2] = new QVector<double>(2);
-    x[2] = new QVector<double>(2);
+    y[2] = new QVector<double>(100);
+    y[3] = new QVector<double>(100);
+
+    y[4] = new QVector<double>(100);
+    y[5] = new QVector<double>(100);
+    y[6] = new QVector<double>(100);
 
     // The SettingsDialog instance handles the serial port configuration
     // window
@@ -60,20 +67,8 @@ mainWindow::mainWindow() : QMainWindow(),
     // serial port and parses the data received through a RegEx string
     protocole = new Protocole();
 
-    protocole->addValues(8);
-
-
     restoreSession();
 
-    // Set how much bytes Port has to read before
-    // taking them into account.
-    // A higher value will delay the redraw
-    // A lower value will cause some lag if many
-    // bytes are received in a small amount of time
-    //
-    // When using Fixed Length frames, the value should
-    // be the exact length of the frame.
-    protocole->setBufferedValue(68);
 
     initActionsConnections();
 
@@ -93,11 +88,17 @@ mainWindow::mainWindow() : QMainWindow(),
     connect(ui->getTime,SIGNAL(clicked()),this,SLOT(getRTCTime()));
     connect(ui->syncSysTime,SIGNAL(clicked()),this,SLOT(getSysTime()));
 
+    connect(ui->logUpdate,SIGNAL(clicked()),this,SLOT(update_c()));
+
 
     // Creating graphs instances
-    graph[0] = ui->graphXAxis;
-    graph[1] = ui->graphYAxis;
-    graph[2] = ui->graphXY;
+    graph[0] = ui->graphXY;
+    graph[1] = ui->graphXAxis;
+    graph[2] = ui->graphYAxis;
+    graph[3] = ui->graphZAxis;
+    graph[4] = ui->gyroX;
+    graph[5] = ui->gyroY;
+    graph[6] = ui->gyroZ;
 
     // The pen is used to draw a dot on XY graphs
     QPen pen;
@@ -109,70 +110,52 @@ mainWindow::mainWindow() : QMainWindow(),
     line.setWidth(1);
 
 
-    // Populating the first graph
-    // Only one curve on this graph : X axis of accelerometer /time
-    graph[0]->addGraph();
-    // The datas are stored in x[0] and y[0] vectors
-    graph[0]->graph(0)->setData(*x[0],*y[0]);
-    graph[0]->graph(0)->setPen(line);
-    // Setting the labels of each axis, as well
-    // as the range
-    graph[0]->xAxis->setLabel("t");
-    graph[0]->yAxis->setLabel("X");
-    graph[0]->yAxis->setRange(-10000,10000);
-    // The X Axis should display time (text)
-    graph[0]->setLocale(QLocale(QLocale::English, QLocale::Canada));
-    graph[0]->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    graph[0]->xAxis->setDateTimeFormat("hh:mm:ss");
-    graph[0]->xAxis->setDateTimeSpec(Qt::OffsetFromUTC);
-    // Activating the zoom and drag interraction in vertical mode
-    graph[0]->setInteraction(QCP::iRangeDrag, true);
-    graph[0]->setInteraction(QCP::iRangeZoom, true);
-    graph[0]->yAxis->axisRect()->setRangeDrag(Qt::Vertical);
-    graph[0]->yAxis->axisRect()->setRangeZoom(Qt::Vertical);
-
-
-    // Populating the second graph
-    // Only one curve on this graph : Y axis of accelerometer /time
-    graph[1]->addGraph();
-    // The datas are stored in x[0] and y[1] vectors
-    graph[1]->graph(0)->setData(*x[0],*y[1]);
-    graph[1]->graph(0)->setPen(line);
-    // Setting the labels of each axis, as well
-    // as the range
-    graph[1]->xAxis->setLabel("t");
-    graph[1]->yAxis->setLabel("Y");
-    graph[1]->yAxis->setRange(-10000,10000);
-    // The X Axis should display time (text)
-    graph[1]->setLocale(QLocale(QLocale::English, QLocale::Canada));
-    graph[1]->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    graph[1]->xAxis->setDateTimeFormat("hh:mm:ss");
-    graph[1]->xAxis->setDateTimeSpec(Qt::OffsetFromUTC);
-    // Activating the zoom and drag interraction in vertical mode
-    graph[1]->setInteraction(QCP::iRangeDrag, true);
-    graph[1]->setInteraction(QCP::iRangeZoom, true);
-    graph[1]->yAxis->axisRect()->setRangeDrag(Qt::Vertical);
-    graph[1]->yAxis->axisRect()->setRangeZoom(Qt::Vertical);
-
+    char * label[16] = {
+        "",
+        "X","Y","Z","X","Y","Z"
+    };
+    for(int i=1;i<7;i++) {
+        // Populating the first graph
+        // Only one curve on this graph : X axis of accelerometer /time
+        graph[i]->addGraph();
+        // The datas are stored in x[0] and y[0] vectors
+        graph[i]->graph(0)->setData(*x[1],*y[i]);
+        graph[i]->graph(0)->setPen(line);
+        // Setting the labels of each axis, as well
+        // as the range
+        graph[i]->xAxis->setLabel("t");
+        graph[i]->yAxis->setLabel(label[i]);
+        graph[i]->yAxis->setRange(-32000,32000);
+        // The X Axis should display time (text)
+        graph[i]->setLocale(QLocale(QLocale::English, QLocale::Canada));
+        graph[i]->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+        graph[i]->xAxis->setDateTimeFormat("hh:mm:ss");
+        graph[i]->xAxis->setDateTimeSpec(Qt::OffsetFromUTC);
+        // Activating the zoom and drag interraction in vertical mode
+        graph[i]->setInteraction(QCP::iRangeDrag, true);
+        graph[i]->setInteraction(QCP::iRangeZoom, true);
+        graph[i]->yAxis->axisRect()->setRangeDrag(Qt::Vertical);
+        graph[i]->yAxis->axisRect()->setRangeZoom(Qt::Vertical);
+    }
 
     // Populating the third graph
     // Only one curve on this graph : X axis /Y axis of accelerometer
-    graph[2]->addGraph();
+    graph[0]->addGraph();
     // The datas are stored in x[2] and y[2] vectors
-    graph[2]->graph(0)->setData(*x[2],*y[2]);
+    graph[0]->graph(0)->setData(*x[0],*y[0]);
     // Draw a red dot
-    graph[2]->graph(0)->setPen(pen);
+    graph[0]->graph(0)->setPen(pen);
     // Setting the labels of each axis, as well
     // as the range
-    graph[2]->xAxis->setLabel("X");
-    graph[2]->yAxis->setLabel("Y");
-    graph[2]->xAxis->setRange(-10000,10000);
-    graph[2]->yAxis->setRange(-10000,10000);
+    graph[0]->xAxis->setLabel("X");
+    graph[0]->yAxis->setLabel("Y");
+    graph[0]->xAxis->setRange(-10000,10000);
+    graph[0]->yAxis->setRange(-10000,10000);
     // Activating the zoom and drag interraction in vertical and horizontal mode
-    graph[2]->setInteraction(QCP::iRangeDrag, true);
-    graph[2]->setInteraction(QCP::iRangeZoom, true);
+    graph[0]->setInteraction(QCP::iRangeDrag, true);
+    graph[0]->setInteraction(QCP::iRangeZoom, true);
 
-    for(int i=0;i<3;i++) {
+    for(int i=0;i<7;i++) {
         graph[i]->xAxis->setBasePen(QPen(QColor(195,195,195)));
         graph[i]->xAxis->setTickPen(QPen(QColor(195,195,195)));
         graph[i]->xAxis->setSubTickPen(QPen(QColor(195,195,195)));
@@ -191,19 +174,43 @@ mainWindow::mainWindow() : QMainWindow(),
     setWindowTitle("Doctor's Order Data Logger");
 
 
-    connect(this,SIGNAL(resync()),protocole,SLOT(resync()));
 
-#if VARIABLE_LENGTH == 1
     // Starting a Timer for graph updates
-    QTimer * timer = new QTimer();
-    timer->setInterval(1);
-    connect(timer,SIGNAL(timeout()),this,SLOT(updateData()));
-    timer->start();
-#else
+    serialFetch = new QTimer();
+    serialFetch->setInterval(5);
+    connect(serialFetch,SIGNAL(timeout()),protocole,SLOT(fetch()));
+
+    guiUpdate = new QTimer();
+    guiUpdate->setInterval(50);
+    connect(guiUpdate,SIGNAL(timeout()),this,SLOT(update()));
+
     connect(protocole,SIGNAL(updateData()),this,SLOT(updateData()));
-#endif
+
 }
 
+void mainWindow::update() {
+    int graphs = -1;
+    if(ui->tabWidget->currentIndex()==0)
+        graphs = 0;
+    if(ui->tabWidget->currentIndex()==1)
+        graphs = 3;
+
+    if(graphs!=-1)
+    for(int i=1+graphs;i<4+graphs;i++) {
+        graph[i]->graph(0)->setData(*x[1],*y[i]);
+        graph[i]->xAxis->setRange(x[1]->at(0),x[1]->last());
+        graph[i]->replot();
+    }
+    if(graphs==0) {
+        graph[0]->graph(0)->setData(*x[0],*y[0]);
+        graph[0]->replot();
+    }
+}
+void mainWindow::update_c() {
+    ui->logConsole->setPlainText(str);
+
+    str = "";
+}
 
 void mainWindow::restoreSession() {
     session->open(QIODevice::ReadOnly);
@@ -275,6 +282,7 @@ double getDate(QString date) {
 }
 
 
+
 /*  updateData is a Slot that can either be called  */
 /*  periodically through a Timer, or directly from  */
 /*  the Protocole's run function                    */
@@ -282,10 +290,6 @@ double getDate(QString date) {
 /*  display the latest information gotten through   */
 /*  the serial connection                           */
 void mainWindow::updateData() {
-    // lastString is used in Variable Length mode to
-    // keep track of read strings and values.
-    static int lastString = 0;
-
     // Getting the current date if needed for the log file
     QString date = QDateTime::currentDateTime().toString("_MM_dd_yyyy");
 
@@ -301,47 +305,20 @@ void mainWindow::updateData() {
         log->open(QIODevice::Append);
     }
 
-    // If using variable length, first check if there's any
-    // strings available, then check if those strings are newer
-    // than the last one read
-    // The nested for/if statement allows a burst of up to 8 values
-    // but still stops as soon as all values are read
-    //
-    // Then, empties the different values if too much data is stored
-#if VARIABLE_LENGTH == 1
-    if(!protocole->strings.isEmpty()) {
-        for(int i=0; i<8&&lastString<protocole->strings.size()&&lastString<protocole->values[protocole->nbValues-1].size(); i++) {
-            time = getDate(protocole->strings.at(lastString));
-            updateYAxis(protocole->values[5].at(lastString));
-            updateXAxis(protocole->values[4].at(lastString),0);
-            updateConsole(protocole->strings.at(lastString++));
-            if(ui->logToFile->isChecked())
-            log->write(protocole->strings.at(lastString).toLatin1()+"\n");
-        }
-
-        if(protocole->strings.size()>4096) {
-            for (int i = 0; i < lastString; i++) {
-                for(int j=0; j<protocole->nbValues;j++)
-                 protocole->values[j].removeFirst();
-                protocole->strings.removeFirst();
-            }
-            lastString = 0;
-        }
-    }
-#else
-    // If using fixed length (recommended), simply update with
-    // the last value available (updateData called from the Protocole's run)
     updateYAxis(protocole->lastValue[5]);
     updateXAxis(protocole->lastValue[4],getDate(protocole->lastString));
-    updateConsole(protocole->lastString);
+    updateTimeGraph(protocole->lastValue[6],3);
+    for(int i=4;i<7;i++)
+        updateTimeGraph(protocole->lastValue[i-3],i);
 
+    updateConsole(protocole->lastString);
     if(ui->logToFile->isChecked())
-    log->write(protocole->lastString.toLatin1()+"\n");
-#endif
+        log->write(protocole->lastString.toLatin1()+"\n");
+
 
     // Closing the file if it had been opened
     if(ui->logToFile->isChecked())
-    log->close();
+        log->close();
 }
 
 
@@ -402,73 +379,66 @@ void mainWindow::initActionsConnections()
 /*  This function update the values related to the  */
 /*  accelerometer's X Axis (X graph, XY graph)      */
 void mainWindow::updateXAxis(double value, double time) {
-    static int refresh = 0;
-
     // Remove the first value from X graph
-    (*y[0]).remove(0,1);
+    (*y[1]).remove(0,1);
     // Append the new value at the end of X graph
-    (*y[0]).append(value);
+    (*y[1]).append(value);
 
     // Remove both points from XY graph
-    (*x[2]).remove(0,2);
+    (*x[0]).remove(0,2);
     // Append the new value to both points in XY graph
-    (*x[2]).append(value);
-    (*x[2]).append(value);
+    (*x[0]).append(value);
+    (*x[0]).append(value);
 
     // Remove the first date
-    (*x[0]).remove(0,1);
+    (*x[1]).remove(0,1);
     // Append the new date to the end
-    (*x[0]).append(time);
-
-    // Once every two new data, update the display
-    if(!refresh) {
-        graph[0]->graph(0)->setData(*x[0],*y[0]);
-        graph[0]->xAxis->setRange(x[0]->first(),x[0]->last());
-        graph[0]->replot();
-        graph[2]->graph(0)->setData(*x[2],*y[2]);
-        graph[2]->replot();
-    }
-    refresh = (refresh+1)%1;
-
+    (*x[1]).append(time);
 }
 
 /*  This function update the values related to the  */
 /*  accelerometer's Y Axis (Y graph, XY graph)      */
 void mainWindow::updateYAxis(double value) {
-    static int refresh = 0;
-
     // Remove first value from Y graph
-    (*y[1]).remove(0,1);
+    (*y[2]).remove(0,1);
     // Append new value to the end of Y graph
-    (*y[1]).append(value);
+    (*y[2]).append(value);
 
     // Remove both points from XY graph
-    (*y[2]).remove(0,2);
+    (*y[0]).remove(0,2);
     // Append the new value to both points in XY graph
-    (*y[2]).append(value);
-    (*y[2]).append(value);
-
-    // Once every two new data, update the display
-    if(!refresh) {
-        graph[1]->graph(0)->setData(*x[0],*y[1]);
-        graph[1]->xAxis->setRange(x[0]->at(0),x[0]->last());
-        graph[1]->replot();
-    }
-    refresh = (refresh+1)%1;
+    (*y[0]).append(value);
+    (*y[0]).append(value);
 }
+
+
+
+/*  This function update the values related to the  */
+/*  accelerometer's Y Axis (Y graph, XY graph)      */
+void mainWindow::updateTimeGraph(double value, int graph) {
+    // Remove first value from Y graph
+    (*y[graph]).remove(0,1);
+    // Append new value to the end of Y graph
+    (*y[graph]).append(value);
+}
+
+
 
 /*  This function updates the console display with  */
 /*  the last received string. Every 2000 lines, the */
 /*  console is cleared to avoid overcharging        */
-void mainWindow::updateConsole(QString str) {
+void mainWindow::updateConsole(QString new_str) {
     static int log = 0;
+    if(str!="")
+        str.append("\n\n");
+    str.append(new_str);
 
-    ui->logConsole->append(str+"\n");
-
-    if(!log) {
+    if(!log)
         ui->logConsole->clear();
-    }
-    log = (log+1)%2000;
+
+    log++;
+    log=log%10000;
+    //ui->logConsole->appendPlainText(str);
 }
 
 
@@ -492,14 +462,17 @@ void mainWindow::openSerialPort()
         QMessageBox::critical(this, tr("Error"), protocole->port->errorString());
     }
 
-    if(protocole->port->isOpen())
-        protocole->start();
+    if(protocole->port->isOpen()) {
+        guiUpdate->start();
+        serialFetch->start();
+    }
 }
 
 /*  CloseSerialPort closes a currently open port    */
 void mainWindow::closeSerialPort()
 {
-    protocole->terminate();
+    guiUpdate->stop();
+    serialFetch->stop();
 
     if (protocole->port->isOpen())
         protocole->port->close();

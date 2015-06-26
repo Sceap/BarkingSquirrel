@@ -66,6 +66,14 @@ QPushButton#actionDisconnect:pressed {
     background-color: #E53935;
 }
 
+QPushButton#actionConnect:hover {
+    background-color: #66BB6A;
+}
+
+QPushButton#actionConnect:pressed {
+    background-color: #43A047;
+}
+
 #logConsole {
     border-radius: 5;
     border:1 solid #E0E0E0;
@@ -89,7 +97,7 @@ QTabBar::tab {
     background:#F5F5F5;
     padding:3;
     width:200;
-    height:18;
+    height:25;
 }
 QTabBar::tab:first {
     border-top-left-radius: 5;
@@ -142,7 +150,7 @@ QSpinBox::up-button {
     width: 8; 
     margin:3; 
     border-radius: 15;
-    background:#E0E0E0;
+    border-image: url(add.png) 0 0 0 0 stretch stretch;
 }
 
 QSpinBox::down-button {
@@ -151,7 +159,7 @@ QSpinBox::down-button {
     width: 8;
     margin:3; 
     border-radius: 15;
-    background:url(":/resources/remove.png");
+    border-image: url(remove.png) 0 0 0 0 stretch stretch;
 }
 QLineEdit {
     border: 1 solid #E0E0E0;
@@ -168,9 +176,9 @@ QComboBox {
 QComboBox::drop-down {
     subcontrol-position: center right;
     
-    width: 10; 
+    width: 15; 
     border-radius:15;
     
-    margin:8;
-    background:#E0E0E0;
+    margin:9 3;
+    border-image: url(drop.png) 0 0 0 0 stretch stretch;
 }

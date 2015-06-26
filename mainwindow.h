@@ -59,11 +59,15 @@ class mainWindow : public QMainWindow
         void sendRTCTime();
 
         void updateData();
+
+        void update();
+        void update_c();
     private:
         Ui::MainWindow *ui;
 
         void updateXAxis(double value, double time);
         void updateYAxis(double value);
+        void updateTimeGraph(double value, int graph);
         void updateConsole(QString str);
         void restoreSession();
 
@@ -76,6 +80,9 @@ class mainWindow : public QMainWindow
         QCustomPlot * graph[10];
 
         QVector<double> *x[10], *y[10];
+        QString str;
+
+        QTimer * serialFetch, * guiUpdate;
 
         QFile * log;
         QFile * session;
