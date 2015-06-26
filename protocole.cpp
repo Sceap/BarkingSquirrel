@@ -43,7 +43,6 @@ Protocole::Protocole()
 Protocole::~Protocole()
 {
     port->close();
-    this->terminate();
     delete port;
 }
 
@@ -104,76 +103,9 @@ void Protocole::setBufferedValue(int buff) {
     bufferedValue = buff;
 }
 
-// Reads the current received buffer, and
-// empties it every time it reaches the read buffer
-// value
-// In Variable Length mode, updates when possible
-// the values vector buffers and the strings vector buffer
-// A Timer must be used in MainWindow in order to periodically
-// use and clear those vectors
-// In Fixed Length mode, updates every time the values variables
-// and the string variable, then emit an updateData signal catchable
-// by the MainWindow class
-void Protocole::run()
-{
-    static char buff[1048576];
-    static long long pos = 0;
-    static long long decal = 0;
-    static QString buffer("");
-    static QByteArray ba;
-    while(1) {
-        usleep(1);
-    }
-    while(1)
-    {
-        if(port->bytesAvailable()>=bufferedValue+10)
-        {
-#if VARIABLE_LENGTH == 1
-            decal += port->readLine(buff+decal,port->bytesAvailable()+1);
-            pos = 0;
-        }
-#else
-        port->readLine(buff,port->bytesAvailable()+1);
-#endif
 
-#if VARIABLE_LENGTH == 1
-        for(int i=0;i<10&&((pos = rx->indexIn(buff, pos)) > -1);i++) {
-
-            strings.append(QString(rx->cap(0)));
-
-
-            for(int j=0;j<nbValues;j++)
-                values[j].append(rx->cap(j+1).toDouble());
-
-#else
-        if((rx->indexIn(buff, 0)) > -1) {
-            lastString = QString(rx->cap(0));
-            for(int j=0;j<nbValues;j++)
-                lastValue[j] = (rx->cap(j+1).toDouble());
-
-            emit(updateData());
-#endif
-
-
-#if VARIABLE_LENGTH == 1
-            buffer = QString::fromLocal8Bit(buff);
-            buffer.remove(pos,rx->matchedLength());
-
-            pos = 0;
-
-            ba = buffer.toLocal8Bit();
-            strcpy(buff,ba.data());
-
-            decal -= rx->matchedLength();
-#endif
-        } else {
-           port->readAll();
-        }
-        }
-    }
-}
-
-
+// Dummy frames used in order to debug
+// the GUI update and threading system
 char dummy[61][68] = {
     "|0015061817280004,-00131,+00076,+00051,+00296,+00016,+17020,-03936|",
     "|0015061817280005,-00126,+00083,+00052,+00220,-00068,+17024,-03936|",
@@ -237,12 +169,35 @@ char dummy[61][68] = {
     "|0015061817280064,-00129,+00079,+00044,+00240,+00004,+16944,-03904|"
 };
 
-
+// The fetch slot is called as fast as possible in order
+// to fetch data from the Serial port buffer.
+// It also handles the detection of frame length and the
+// number of comma separated values contained in each frame.
+// In order for the sync process - and therefore the whole function -
+// to work properly, each frame must be separated by an ASCII \n (0x0D)
+// character
 void Protocole::fetch() {
+    // i is used to compute the time spent
+    // between what the thread thinks is one
+    // second, and the actual second
+    //
+    // If 1 thread-second is more than 1.5 real-second,
+    // frames will be missed
+    //
+    // j is used to cycle through the dummy table
+    // in debug mode
     static int i,j = 0;
     static int ms = GetTickCount();
+
+    // buff stores the new frame to be treated
     static char buff[2048];
+
+    // tmp is the character used for the syncing process
     char tmp;
+
+    // The syncInProgress flag is set once a separator (0x0D)
+    // is detected. It starts looking for the number of field (nbField)
+    // and the length of a frame (frameLength)
     static bool syncInProgress = false;
     static short frameLength = 0;
     static short nbField = 0;
@@ -250,38 +205,54 @@ void Protocole::fetch() {
     i = (i+1)%200;
     j = (j+1)%61;
 
+    // Every thread-second, print the real-second
     if(!i) {
         qDebug() << "One sec : " << (GetTickCount() - ms);
         ms = GetTickCount();
     }
 
-    if(!syncInProgress) {
+    // Below is the syncing FSM. If the thread is neither
+    // syncing or synced, it has been unsynced or hasn't
+    // been synced yet: start looking for the separator
+    if(!syncInProgress&&!synced) {
         if(port->bytesAvailable()) {
             tmp = port->read(1).at(0);
 
+            // The separator character starts the syncing process
             if(tmp==0x0D)
                 syncInProgress = true;
         }
+    // Once the separator is found, we can start counting
+    // for characters in a frame, until the next separator
+    // We also detect the number of fields in a frame
     } else if(!synced) {
         if(port->bytesAvailable()) {
             tmp = port->read(1).at(0);
 
+            // each comma induce a new field
             if(tmp==',') {
                 nbField++;
             }
+            // a new separator value means that
+            // the syncing is complete
             if(tmp==0x0D) {
                 syncInProgress = false;
                 synced = true;
+
+                // Creating the right regEx...
                 nbValues = nbField+1;
                 setRegEx();
             }
             frameLength++;
         }
+    // One the second separator has been found, we can start
+    // reading frames out of the buffer
     } else if(synced) {
         if(port->bytesAvailable()>frameLength) {
             port->readLine(buff,frameLength+1);
 
 
+            // First of all we check if the frame matches the regEx
             if((rx->indexIn(buff, 0)) > -1) {
                 lastString = QString(rx->cap(0));
 
@@ -289,67 +260,21 @@ void Protocole::fetch() {
                     lastValue[j] = (rx->cap(j+1).toDouble());
 
                 emit updateData();
+
+            // If the frame doesn't match the regEx, either that one
+            // frame was false and the rest of the buffer is corrupted,
+            // or the sync processed didn't match the actual frame set up
+            // Either way, time to resync the system.
             } else {
-                qDebug() << "Resync needed";
                 synced = false;
                 syncInProgress = false;
                 frameLength = 0;
                 nbField = 0;
+                // The buffer is emptied before syncing again
                 port->readAll();
             }
         }
     }
-
-
-
-    /*
-
-    static char buff[1048576];
-
-    if(port->bytesAvailable()>=bufferedValue+10)
-    {
-#if VARIABLE_LENGTH == 1
-        decal += port->readLine(buff+decal,port->bytesAvailable()+1);
-        pos = 0;
-    }
-#else
-    port->readLine(buff,port->bytesAvailable()+1);
-#endif
-
-#if VARIABLE_LENGTH == 1
-    for(int i=0;i<10&&((pos = rx->indexIn(buff, pos)) > -1);i++) {
-
-        strings.append(QString(rx->cap(0)));
-
-
-        for(int j=0;j<nbValues;j++)
-            values[j].append(rx->cap(j+1).toDouble());
-
-#else
-    if((rx->indexIn(buff, 0)) > -1) {
-        lastString = QString(rx->cap(0));
-        for(int j=0;j<nbValues;j++)
-            lastValue[j] = (rx->cap(j+1).toDouble());
-
-        emit(updateData());
-#endif
-
-
-#if VARIABLE_LENGTH == 1
-        buffer = QString::fromLocal8Bit(buff);
-        buffer.remove(pos,rx->matchedLength());
-
-        pos = 0;
-
-        ba = buffer.toLocal8Bit();
-        strcpy(buff,ba.data());
-
-        decal -= rx->matchedLength();
-#endif
-    } else {
-       port->readAll();
-    }
-    }*/
 }
 
 

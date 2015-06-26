@@ -31,8 +31,11 @@ mainWindow::mainWindow() : QMainWindow(),
     ui(new Ui::MainWindow)
 {
     this->setMinimumSize(1000,500);
+    // Creating the general UI
     ui->setupUi(this);
 
+    // Making last minute adjustments and
+    // initializing some parts of the UI
     ui->tabWidget->setCurrentIndex(0);
     ui->fileName->setText("log_file");
     ui->actionDisconnect->setEnabled(false);
@@ -67,12 +70,12 @@ mainWindow::mainWindow() : QMainWindow(),
     // serial port and parses the data received through a RegEx string
     protocole = new Protocole();
 
+
+    // Now that everything's ready, try restoring
+    // an existing session
     restoreSession();
 
-
-    initActionsConnections();
-
-    // Creating all the commands button
+    // Connecting all the commands button
     QSignalMapper * cmdMap = new QSignalMapper(this);
 
     connect(ui->cmdFreq,SIGNAL(clicked()),cmdMap,SLOT(map()));
@@ -83,15 +86,23 @@ mainWindow::mainWindow() : QMainWindow(),
     cmdMap -> setMapping (ui->cmdStream, "STR") ;
     connect(cmdMap,SIGNAL(mapped(QString)),this,SLOT(sendCommandBox(QString)));
 
-
+    // Connecting the buttons for RTC sync
     connect(ui->sendTime,SIGNAL(clicked()),this,SLOT(sendRTCTime()));
     connect(ui->getTime,SIGNAL(clicked()),this,SLOT(getRTCTime()));
     connect(ui->syncSysTime,SIGNAL(clicked()),this,SLOT(getSysTime()));
 
+    // Connecting the button to fetch the last logged frames
+    // into the console
     connect(ui->logUpdate,SIGNAL(clicked()),this,SLOT(update_c()));
 
+    // Connecting the buttons used to connect to and configure
+    // the serial port
+    connect(ui->actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
+    connect(ui->actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
+    connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
 
-    // Creating graphs instances
+
+    // Creating graphs instances by linking them to UI elements
     graph[0] = ui->graphXY;
     graph[1] = ui->graphXAxis;
     graph[2] = ui->graphYAxis;
@@ -105,20 +116,24 @@ mainWindow::mainWindow() : QMainWindow(),
     pen.setColor(QColor(229,115,115,255));
     pen.setWidth(10);
     pen.setCapStyle(Qt::RoundCap);
+    // The line is used to draw classic graphs
     QPen line;
     line.setColor(QColor(25,118,210,255));
     line.setWidth(1);
 
 
+    // Graph 1 to 6 stores the accelerometer and gyroscope
+    // axis, and share similar settings.
+    // Their label can be set directly in the next array
     char * label[16] = {
         "",
-        "X","Y","Z","X","Y","Z"
+        "X","Y","Z",    // Accelerometer's three axis
+        "X","Y","Z"     // Gyroscope's three axis
     };
     for(int i=1;i<7;i++) {
-        // Populating the first graph
-        // Only one curve on this graph : X axis of accelerometer /time
+        // Only one curve on those graphs : axis/time
         graph[i]->addGraph();
-        // The datas are stored in x[0] and y[0] vectors
+        // The datas are stored in x[1] (time) and y[i] vectors
         graph[i]->graph(0)->setData(*x[1],*y[i]);
         graph[i]->graph(0)->setPen(line);
         // Setting the labels of each axis, as well
@@ -138,10 +153,10 @@ mainWindow::mainWindow() : QMainWindow(),
         graph[i]->yAxis->axisRect()->setRangeZoom(Qt::Vertical);
     }
 
-    // Populating the third graph
+    // Populating the XY graph
     // Only one curve on this graph : X axis /Y axis of accelerometer
     graph[0]->addGraph();
-    // The datas are stored in x[2] and y[2] vectors
+    // The datas are stored in x[0] and y[0] vectors
     graph[0]->graph(0)->setData(*x[0],*y[0]);
     // Draw a red dot
     graph[0]->graph(0)->setPen(pen);
@@ -155,6 +170,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[0]->setInteraction(QCP::iRangeDrag, true);
     graph[0]->setInteraction(QCP::iRangeZoom, true);
 
+    // For each graph, making the lines lighter in order to clean up the view
     for(int i=0;i<7;i++) {
         graph[i]->xAxis->setBasePen(QPen(QColor(195,195,195)));
         graph[i]->xAxis->setTickPen(QPen(QColor(195,195,195)));
@@ -164,6 +180,8 @@ mainWindow::mainWindow() : QMainWindow(),
         graph[i]->yAxis->setSubTickPen(QPen(QColor(195,195,195)));
     }
 
+    // For every setting that should be saved, connecting the saveSession slot to
+    // the state change signal
     connect(ui->appendDate,SIGNAL(stateChanged(int)),this,SLOT(saveSession()));
     connect(ui->logToFile,SIGNAL(stateChanged(int)),this,SLOT(saveSession()));
     connect(ui->fileName,SIGNAL(textChanged(QString)),this,SLOT(saveSession()));
@@ -175,20 +193,26 @@ mainWindow::mainWindow() : QMainWindow(),
 
 
 
-    // Starting a Timer for graph updates
+    // Starting a Timer for frame fetching
     serialFetch = new QTimer();
     serialFetch->setInterval(5);
     connect(serialFetch,SIGNAL(timeout()),protocole,SLOT(fetch()));
 
+    // Starting a Timer for GUI update
     guiUpdate = new QTimer();
     guiUpdate->setInterval(50);
     connect(guiUpdate,SIGNAL(timeout()),this,SLOT(update()));
 
+    // Connecting the serial port to the updateData slot
     connect(protocole,SIGNAL(updateData()),this,SLOT(updateData()));
-
 }
 
+/* Update is called in order to update the GUI          */
+/* with the information collected since the last        */
+/* update                                               */
 void mainWindow::update() {
+    // It is no use updating graphs that aren't
+    // visible
     int graphs = -1;
     if(ui->tabWidget->currentIndex()==0)
         graphs = 0;
@@ -206,12 +230,21 @@ void mainWindow::update() {
         graph[0]->replot();
     }
 }
+
+/* Update_c allows to display the latest frames         */
+/* in the console. It is called manually when clicking  */
+/* on "Fetch frames". It can also be linked to a timer, */
+/* but it isn't recommended                             */
 void mainWindow::update_c() {
     ui->logConsole->setPlainText(str);
 
     str = "";
 }
 
+
+/* Restore session opens the session data file as       */
+/* ReadOnly and updates every settings with the ones    */
+/* stored in the filr                                   */
 void mainWindow::restoreSession() {
     session->open(QIODevice::ReadOnly);
     QTextStream sessionLine(session);
@@ -230,6 +263,9 @@ void mainWindow::restoreSession() {
     session->close();
 }
 
+/* Save session opens the session data file as          */
+/* WriteOnly and erases its content with the latest     */
+/* configuration                                        */
 void mainWindow::saveSession() {
     session->open(QIODevice::WriteOnly);
     QTextStream sessionLine(session);
@@ -249,10 +285,10 @@ void mainWindow::saveSession() {
 }
 
 
-/*  Simple function used to extract the date from   */
-/*  a frame                                         */
-/*  returns the time in seconds                     */
-/*  Only works for the time, not the date           */
+/*  Simple function used to extract the date from       */
+/*  a frame                                             */
+/*  returns the time in seconds                         */
+/*  Only works for the time, not the date               */
 double getDate(QString date) {
     double hour = 0;
     double minute = 0;
@@ -283,12 +319,12 @@ double getDate(QString date) {
 
 
 
-/*  updateData is a Slot that can either be called  */
-/*  periodically through a Timer, or directly from  */
-/*  the Protocole's run function                    */
-/*  It calls every update function in order to      */
-/*  display the latest information gotten through   */
-/*  the serial connection                           */
+/*  updateData is a Slot that can either be called      */
+/*  periodically through a Timer, or directly from the  */
+/*  Protocole's run function                            */
+/*  It calls every update function in order to update   */
+/*  the latest information gotten through the serial    */
+/*  connection                                          */
 void mainWindow::updateData() {
     // Getting the current date if needed for the log file
     QString date = QDateTime::currentDateTime().toString("_MM_dd_yyyy");
@@ -305,6 +341,7 @@ void mainWindow::updateData() {
         log->open(QIODevice::Append);
     }
 
+    // Updating the different datas
     updateYAxis(protocole->lastValue[5]);
     updateXAxis(protocole->lastValue[4],getDate(protocole->lastString));
     updateTimeGraph(protocole->lastValue[6],3);
@@ -312,6 +349,8 @@ void mainWindow::updateData() {
         updateTimeGraph(protocole->lastValue[i-3],i);
 
     updateConsole(protocole->lastString);
+
+    // Logging to the file
     if(ui->logToFile->isChecked())
         log->write(protocole->lastString.toLatin1()+"\n");
 
@@ -322,17 +361,19 @@ void mainWindow::updateData() {
 }
 
 
-/*  Sends a command through the UART                */
+/*  Sends a command through the UART                    */
 void mainWindow::sendCommand(QString cmd) {
     protocole->send_str(QString("#"+cmd).toLatin1());
     qDebug() << QString("#"+cmd).toLatin1();
 }
 
+/*  Sends a command through the UART using the cmdValue */
 void mainWindow::sendCommandBox(QString cmd) {
     QString number = QString("%1").arg(ui->cmdValue->value(), 5, 10, QChar('0'));
     sendCommand(QString(cmd+number));
 }
 
+/*  Getting the system time and sending it to the RTC   */
 void mainWindow::getSysTime() {
     QDateTime now = QDateTime::currentDateTime();
     ui->RTCYear->setValue(now.date().toString("yy").toInt());
@@ -343,6 +384,9 @@ void mainWindow::getSysTime() {
     ui->RTCSecond->setValue(now.time().toString("ss").toInt());
     sendRTCTime();
 }
+
+/*  Getting the latest RTC time received in order to see*/
+/*  if it needs to be synced again                      */
 void mainWindow::getRTCTime() {
     QString now = protocole->lastString;
     ui->RTCYear->setValue(now.mid(3,2).toInt());
@@ -352,6 +396,8 @@ void mainWindow::getRTCTime() {
     ui->RTCMinute->setValue(now.mid(11,2).toInt());
     ui->RTCSecond->setValue(now.mid(13,2).toInt());
 }
+
+/*  Sending the time to the RTC                         */
 void mainWindow::sendRTCTime() {
     sendCommand("YRS"+QString("%1").arg(ui->RTCYear->value(), 5, 10, QChar('0')));
     protocole->send_char('.');
@@ -367,17 +413,9 @@ void mainWindow::sendRTCTime() {
     protocole->send_char('.');
 }
 
-/*  Serial port buttons connects                    */
-void mainWindow::initActionsConnections()
-{
-    connect(ui->actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
-    connect(ui->actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
-    connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
-}
 
-
-/*  This function update the values related to the  */
-/*  accelerometer's X Axis (X graph, XY graph)      */
+/*  This function update the values related to the      */
+/*  accelerometer's X Axis (X graph, XY graph)          */
 void mainWindow::updateXAxis(double value, double time) {
     // Remove the first value from X graph
     (*y[1]).remove(0,1);
@@ -396,8 +434,8 @@ void mainWindow::updateXAxis(double value, double time) {
     (*x[1]).append(time);
 }
 
-/*  This function update the values related to the  */
-/*  accelerometer's Y Axis (Y graph, XY graph)      */
+/*  This function update the values related to the      */
+/*  accelerometer's Y Axis (Y graph, XY graph)          */
 void mainWindow::updateYAxis(double value) {
     // Remove first value from Y graph
     (*y[2]).remove(0,1);
@@ -413,8 +451,8 @@ void mainWindow::updateYAxis(double value) {
 
 
 
-/*  This function update the values related to the  */
-/*  accelerometer's Y Axis (Y graph, XY graph)      */
+/*  This function update the values stored in the graph */
+/*  'graph'                                             */
 void mainWindow::updateTimeGraph(double value, int graph) {
     // Remove first value from Y graph
     (*y[graph]).remove(0,1);
@@ -424,27 +462,18 @@ void mainWindow::updateTimeGraph(double value, int graph) {
 
 
 
-/*  This function updates the console display with  */
-/*  the last received string. Every 2000 lines, the */
-/*  console is cleared to avoid overcharging        */
+/*  This function updates the console display with the  */
+/*  last received string.                               */
 void mainWindow::updateConsole(QString new_str) {
-    static int log = 0;
     if(str!="")
         str.append("\n\n");
     str.append(new_str);
-
-    if(!log)
-        ui->logConsole->clear();
-
-    log++;
-    log=log%10000;
-    //ui->logConsole->appendPlainText(str);
 }
 
 
-/*  OpenSerialPort allows the user to connect to    */
-/*  the port whose settings were defined in the     */
-/*  setting dialog                                  */
+/*  OpenSerialPort allows the user to connect to the    */
+/*  port whose settings were defined in the setting     */
+/*  dialog                                              */
 void mainWindow::openSerialPort()
 {
     SettingsDialog::Settings p = settings->settings();
@@ -468,7 +497,7 @@ void mainWindow::openSerialPort()
     }
 }
 
-/*  CloseSerialPort closes a currently open port    */
+/*  CloseSerialPort closes a currently open port        */
 void mainWindow::closeSerialPort()
 {
     guiUpdate->stop();
