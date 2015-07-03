@@ -9,6 +9,7 @@
 #include "qcustomplot.h"
 #include "protocole.h"
 #include "settingsdialog.h"
+#include "fileviewer.h"
 #include "spinbox.h"
 
 QT_USE_NAMESPACE
@@ -18,6 +19,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
+
+
 
 QT_END_NAMESPACE
 
@@ -45,6 +48,7 @@ class mainWindow : public QMainWindow
 
         void update();
         void update_c();
+
     private:
         Ui::MainWindow *ui;
 
@@ -59,6 +63,7 @@ class mainWindow : public QMainWindow
         Protocole * protocole;
 
         SettingsDialog * settings;
+        FileViewer * file_viewer;
 
         QCustomPlot * graph[10];
 

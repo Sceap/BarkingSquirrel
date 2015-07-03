@@ -205,6 +205,20 @@ void Protocole::fetch() {
     i = (i+1)%200;
     j = (j+1)%61;
 
+    /*
+    nbValues = 8;
+    setRegEx();
+
+    if((rx->indexIn(dummy[j], 0)) > -1) {
+        lastString = QString(rx->cap(0));
+
+        for(int j=0;j<nbValues;j++)
+            lastValue[j] = (rx->cap(j+1).toDouble());
+
+        emit updateData();
+    }
+    */
+
     // Every thread-second, print the real-second
     if(!i) {
         qDebug() << "One sec : " << (GetTickCount() - ms);
@@ -253,6 +267,8 @@ void Protocole::fetch() {
 
 
             // First of all we check if the frame matches the regEx
+            // If it does, we update the different values with the one
+            // from the frame
             if((rx->indexIn(buff, 0)) > -1) {
                 lastString = QString(rx->cap(0));
 
@@ -263,7 +279,7 @@ void Protocole::fetch() {
 
             // If the frame doesn't match the regEx, either that one
             // frame was false and the rest of the buffer is corrupted,
-            // or the sync processed didn't match the actual frame set up
+            // or the sync process didn't match the actual frame set up
             // Either way, time to resync the system.
             } else {
                 synced = false;

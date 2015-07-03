@@ -54,6 +54,7 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QCheckBox *logToFile;
     QCheckBox *appendDate;
+    QPushButton *viewLog;
     QSpacerItem *horizontalSpacer_28;
     QGroupBox *groupBox_3;
     QHBoxLayout *horizontalLayout_5;
@@ -145,11 +146,33 @@ public:
     QSpacerItem *horizontalSpacer_21;
     QSpacerItem *horizontalSpacer_17;
     QSpacerItem *horizontalSpacer_18;
+    QGroupBox *groupBox_5;
+    QVBoxLayout *verticalLayout_7;
+    QLabel *label_12;
+    QHBoxLayout *horizontalLayout_15;
+    QSpacerItem *horizontalSpacer_40;
+    QLabel *label_10;
+    QLineEdit *fileNameSD;
+    QLabel *label_11;
+    QHBoxLayout *horizontalLayout_14;
+    QSpacerItem *horizontalSpacer_41;
+    QCheckBox *logToFileSD;
+    QCheckBox *appendDateSD;
+    QSpacerItem *verticalSpacer_5;
+    QLabel *label_13;
+    QHBoxLayout *horizontalLayout_19;
+    QSpacerItem *horizontalSpacer_42;
+    QCheckBox *logBluetooth;
+    QCheckBox *logUSB;
+    QHBoxLayout *horizontalLayout_17;
+    QSpacerItem *horizontalSpacer_39;
+    QPushButton *applyLog;
     QSpacerItem *verticalSpacer_3;
     QSpacerItem *verticalSpacer_2;
     QSpacerItem *verticalSpacer;
     QVBoxLayout *verticalLayout_5;
     QSpacerItem *horizontalSpacer_24;
+    QSpacerItem *verticalSpacer_4;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -237,6 +260,11 @@ public:
         appendDate->setObjectName(QStringLiteral("appendDate"));
 
         horizontalLayout_3->addWidget(appendDate);
+
+        viewLog = new QPushButton(groupBox_2);
+        viewLog->setObjectName(QStringLiteral("viewLog"));
+
+        horizontalLayout_3->addWidget(viewLog);
 
         horizontalLayout_3->setStretch(0, 1);
         horizontalLayout_3->setStretch(1, 1);
@@ -665,6 +693,110 @@ public:
 
         verticalLayout_4->addWidget(groupBox_4);
 
+        groupBox_5 = new QGroupBox(tab_2);
+        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
+        QSizePolicy sizePolicy6(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
+        groupBox_5->setSizePolicy(sizePolicy6);
+        verticalLayout_7 = new QVBoxLayout(groupBox_5);
+        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
+        label_12 = new QLabel(groupBox_5);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        verticalLayout_7->addWidget(label_12);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setObjectName(QStringLiteral("horizontalLayout_15"));
+        horizontalSpacer_40 = new QSpacerItem(10, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_15->addItem(horizontalSpacer_40);
+
+        label_10 = new QLabel(groupBox_5);
+        label_10->setObjectName(QStringLiteral("label_10"));
+
+        horizontalLayout_15->addWidget(label_10);
+
+        fileNameSD = new QLineEdit(groupBox_5);
+        fileNameSD->setObjectName(QStringLiteral("fileNameSD"));
+
+        horizontalLayout_15->addWidget(fileNameSD);
+
+        label_11 = new QLabel(groupBox_5);
+        label_11->setObjectName(QStringLiteral("label_11"));
+
+        horizontalLayout_15->addWidget(label_11);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_15);
+
+        horizontalLayout_14 = new QHBoxLayout();
+        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
+        horizontalSpacer_41 = new QSpacerItem(10, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_14->addItem(horizontalSpacer_41);
+
+        logToFileSD = new QCheckBox(groupBox_5);
+        logToFileSD->setObjectName(QStringLiteral("logToFileSD"));
+
+        horizontalLayout_14->addWidget(logToFileSD);
+
+        appendDateSD = new QCheckBox(groupBox_5);
+        appendDateSD->setObjectName(QStringLiteral("appendDateSD"));
+
+        horizontalLayout_14->addWidget(appendDateSD);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_14);
+
+        verticalSpacer_5 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_7->addItem(verticalSpacer_5);
+
+        label_13 = new QLabel(groupBox_5);
+        label_13->setObjectName(QStringLiteral("label_13"));
+
+        verticalLayout_7->addWidget(label_13);
+
+        horizontalLayout_19 = new QHBoxLayout();
+        horizontalLayout_19->setObjectName(QStringLiteral("horizontalLayout_19"));
+        horizontalLayout_19->setContentsMargins(-1, 0, -1, -1);
+        horizontalSpacer_42 = new QSpacerItem(10, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_19->addItem(horizontalSpacer_42);
+
+        logBluetooth = new QCheckBox(groupBox_5);
+        logBluetooth->setObjectName(QStringLiteral("logBluetooth"));
+
+        horizontalLayout_19->addWidget(logBluetooth);
+
+        logUSB = new QCheckBox(groupBox_5);
+        logUSB->setObjectName(QStringLiteral("logUSB"));
+
+        horizontalLayout_19->addWidget(logUSB);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_19);
+
+        horizontalLayout_17 = new QHBoxLayout();
+        horizontalLayout_17->setObjectName(QStringLiteral("horizontalLayout_17"));
+        horizontalLayout_17->setContentsMargins(-1, 0, -1, -1);
+        horizontalSpacer_39 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_17->addItem(horizontalSpacer_39);
+
+        applyLog = new QPushButton(groupBox_5);
+        applyLog->setObjectName(QStringLiteral("applyLog"));
+
+        horizontalLayout_17->addWidget(applyLog);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_17);
+
+
+        verticalLayout_4->addWidget(groupBox_5);
+
         verticalSpacer_3 = new QSpacerItem(20, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout_4->addItem(verticalSpacer_3);
@@ -696,7 +828,11 @@ public:
         horizontalLayout_2->addWidget(tabWidget);
 
 
-        gridLayout->addLayout(horizontalLayout_2, 2, 0, 1, 1);
+        gridLayout->addLayout(horizontalLayout_2, 3, 0, 1, 1);
+
+        verticalSpacer_4 = new QSpacerItem(20, 8, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout->addItem(verticalSpacer_4, 2, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
@@ -705,7 +841,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -722,6 +858,7 @@ public:
         label_9->setText(QApplication::translate("MainWindow", ".txt", 0));
         logToFile->setText(QApplication::translate("MainWindow", "Log to file", 0));
         appendDate->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
+        viewLog->setText(QApplication::translate("MainWindow", "View a log", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Send command", 0));
         cmdFreq->setText(QApplication::translate("MainWindow", "FREQUENCY", 0));
         cmdBurst->setText(QApplication::translate("MainWindow", "BURST", 0));
@@ -742,7 +879,17 @@ public:
         getTime->setText(QApplication::translate("MainWindow", "Get RTC time", 0));
         syncSysTime->setText(QApplication::translate("MainWindow", "Sync RTC to System time", 0));
         sendTime->setText(QApplication::translate("MainWindow", "Send custom time", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Advanced Commands", 0));
+        groupBox_5->setTitle(QApplication::translate("MainWindow", "Log options", 0));
+        label_12->setText(QApplication::translate("MainWindow", "SD Options", 0));
+        label_10->setText(QApplication::translate("MainWindow", "SD log filename", 0));
+        label_11->setText(QApplication::translate("MainWindow", ".txt", 0));
+        logToFileSD->setText(QApplication::translate("MainWindow", "Log to SD", 0));
+        appendDateSD->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
+        label_13->setText(QApplication::translate("MainWindow", "Communication options", 0));
+        logBluetooth->setText(QApplication::translate("MainWindow", "Log through Bluetooth", 0));
+        logUSB->setText(QApplication::translate("MainWindow", "Log through USB", 0));
+        applyLog->setText(QApplication::translate("MainWindow", "Apply settings", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Control Panel", 0));
     } // retranslateUi
 
 };

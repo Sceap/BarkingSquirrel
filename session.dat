@@ -1,8 +1,8 @@
-log_file
+log_test
 true
 true
-100
-COM28
+50
+COM3
 115200
 8
 0

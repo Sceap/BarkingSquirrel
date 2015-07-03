@@ -52,19 +52,20 @@ mainWindow::mainWindow() : QMainWindow(),
     y[0] = new QVector<double>(2);
     x[0] = new QVector<double>(2);
 
-    x[1] = new QVector<double>(100);
+    x[1] = new QVector<double>(200);
 
-    y[1] = new QVector<double>(100);
-    y[2] = new QVector<double>(100);
-    y[3] = new QVector<double>(100);
+    y[1] = new QVector<double>(200);
+    y[2] = new QVector<double>(200);
+    y[3] = new QVector<double>(200);
 
-    y[4] = new QVector<double>(100);
-    y[5] = new QVector<double>(100);
-    y[6] = new QVector<double>(100);
+    y[4] = new QVector<double>(200);
+    y[5] = new QVector<double>(200);
+    y[6] = new QVector<double>(200);
 
     // The SettingsDialog instance handles the serial port configuration
     // window
     settings = new SettingsDialog();
+    file_viewer = new FileViewer();
 
     // The Protocole instance handles the communication through the selected
     // serial port and parses the data received through a RegEx string
@@ -100,6 +101,7 @@ mainWindow::mainWindow() : QMainWindow(),
     connect(ui->actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
     connect(ui->actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
     connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
+    connect(ui->viewLog,SIGNAL(clicked()),file_viewer,SLOT(show()));
 
 
     // Creating graphs instances by linking them to UI elements
@@ -120,6 +122,12 @@ mainWindow::mainWindow() : QMainWindow(),
     QPen line;
     line.setColor(QColor(25,118,210,255));
     line.setWidth(1);
+    QPen line_red;
+    line_red.setColor(QColor(210,25,118,255));
+    line_red.setWidth(1);
+    QPen line_green;
+    line_green.setColor(QColor(118,210,25,255));
+    line_green.setWidth(1);
 
 
     // Graph 1 to 6 stores the accelerometer and gyroscope
@@ -152,6 +160,10 @@ mainWindow::mainWindow() : QMainWindow(),
         graph[i]->yAxis->axisRect()->setRangeDrag(Qt::Vertical);
         graph[i]->yAxis->axisRect()->setRangeZoom(Qt::Vertical);
     }
+    graph[2]->graph(0)->setPen(line_green);
+    graph[3]->graph(0)->setPen(line_red);
+    graph[5]->graph(0)->setPen(line_green);
+    graph[6]->graph(0)->setPen(line_red);
 
     // Populating the XY graph
     // Only one curve on this graph : X axis /Y axis of accelerometer
@@ -189,23 +201,25 @@ mainWindow::mainWindow() : QMainWindow(),
     connect(settings,SIGNAL(updated()),this,SLOT(saveSession()));
 
     // Addding Window's title
-    setWindowTitle("Doctor's Order Data Logger");
+    setWindowTitle("Doctor's Orders Data Logger");
 
 
 
-    // Starting a Timer for frame fetching
+    // Creating a Timer for frame fetching
     serialFetch = new QTimer();
     serialFetch->setInterval(5);
     connect(serialFetch,SIGNAL(timeout()),protocole,SLOT(fetch()));
 
-    // Starting a Timer for GUI update
+    // Creating a Timer for GUI update
     guiUpdate = new QTimer();
     guiUpdate->setInterval(50);
     connect(guiUpdate,SIGNAL(timeout()),this,SLOT(update()));
 
     // Connecting the serial port to the updateData slot
     connect(protocole,SIGNAL(updateData()),this,SLOT(updateData()));
+
 }
+
 
 /* Update is called in order to update the GUI          */
 /* with the information collected since the last        */

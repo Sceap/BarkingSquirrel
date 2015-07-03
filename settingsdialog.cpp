@@ -37,6 +37,7 @@
 
 #include <QtSerialPort/QSerialPortInfo>
 #include <QIntValidator>
+#include <QFileDialog>
 #include <QLineEdit>
 #include <QDebug>
 
