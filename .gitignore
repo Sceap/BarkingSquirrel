@@ -31,7 +31,6 @@
 # Debug files
 *.dSYM/
 
-*.pro
 *.pro.*
 *Makefile*
 *Debug*
@@ -41,3 +40,5 @@
 *.autosave
 
 DrsOrdersLogger
+
+*.zip
