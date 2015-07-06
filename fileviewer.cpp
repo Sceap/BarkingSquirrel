@@ -199,12 +199,17 @@ double getDateLog(QString date) {
     return day*24*3600+hour*3600+minute*60+sec*1+csec*.01;
 }
 
+void FileViewer::show_dialog(QString dir) {
+    this->dir = dir;
+    this->show();
+}
+
 void FileViewer::showEvent(QShowEvent *)
 {
     char myStr[200];
     QStringList str;
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Log"), "./", tr("Text Files (*.txt)"));
+        tr("Open Log"), dir, tr("Text Files (*.txt)"));
 
     setWindowTitle("File Log: "+fileName);
     ifstream myfile (fileName.toLatin1().data());

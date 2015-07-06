@@ -49,6 +49,8 @@ class mainWindow : public QMainWindow
         void update();
         void update_c();
 
+        void changeLogDirectory();
+
     private:
         Ui::MainWindow *ui;
 
@@ -69,11 +71,14 @@ class mainWindow : public QMainWindow
 
         QVector<double> *x[10], *y[10];
         QString str;
+        QString logDirectory;
 
         QTimer * serialFetch, * guiUpdate;
 
         QFile * log;
         QFile * session;
+
+        QSignalMapper * logMap;
 };
 
 #endif // MAINWINDOW_H

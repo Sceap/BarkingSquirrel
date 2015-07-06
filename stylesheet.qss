@@ -123,7 +123,6 @@ QCheckBox {
     border-radius: 2;
     padding: 10;
 }
-
 QCheckBox::indicator {
     background: #FFFFFF;
     border: 1 solid #E0E0E0;
@@ -137,6 +136,28 @@ QCheckBox::indicator:checked {
     background: #90CAF9;
     border: #90CAF9
 }
+
+
+
+QRadioButton {
+    border: 1 solid #E0E0E0;
+    border-radius: 2;
+    padding: 10;
+}
+QRadioButton::indicator {
+    background: #FFFFFF;
+    border: 1 solid #E0E0E0;
+    border-radius:6;
+}
+QRadioButton::indicator:hover {
+    border: 1 solid #90CAF9;
+    background: #FFFFFF;
+}
+QRadioButton::indicator:checked {
+    background: #90CAF9;
+    border: #90CAF9
+}
+
 
 QSpinBox {
     border: 1 solid #E0E0E0;

@@ -28,12 +28,14 @@ public:
 
 public slots:
     void mouseRelease(QMouseEvent* event);
+    void show_dialog(QString dir);
 
 private:
     Ui::FileViewer *ui;
 
 
     QZoomPlot * graph[20];
+    QString dir;
 
     QVector<double> *x[20], *y[20];
 };

@@ -23,6 +23,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
@@ -54,6 +55,7 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QCheckBox *logToFile;
     QCheckBox *appendDate;
+    QPushButton *changeDirectory;
     QPushButton *viewLog;
     QSpacerItem *horizontalSpacer_28;
     QGroupBox *groupBox_3;
@@ -103,8 +105,7 @@ public:
     QCustomPlot *gyroZ;
     QWidget *widget;
     QWidget *tab_2;
-    QHBoxLayout *horizontalLayout_10;
-    QVBoxLayout *verticalLayout_4;
+    QVBoxLayout *verticalLayout_12;
     QGroupBox *groupBox_4;
     QVBoxLayout *verticalLayout_6;
     QHBoxLayout *horizontalLayout_11;
@@ -146,6 +147,8 @@ public:
     QSpacerItem *horizontalSpacer_21;
     QSpacerItem *horizontalSpacer_17;
     QSpacerItem *horizontalSpacer_18;
+    QHBoxLayout *horizontalLayout_10;
+    QVBoxLayout *verticalLayout_4;
     QGroupBox *groupBox_5;
     QVBoxLayout *verticalLayout_7;
     QLabel *label_12;
@@ -170,8 +173,26 @@ public:
     QSpacerItem *verticalSpacer_3;
     QSpacerItem *verticalSpacer_2;
     QSpacerItem *verticalSpacer;
+    QSpacerItem *horizontalSpacer_45;
     QVBoxLayout *verticalLayout_5;
+    QGroupBox *groupBox_6;
+    QVBoxLayout *verticalLayout_11;
+    QHBoxLayout *horizontalLayout_20;
+    QLabel *label_14;
+    QLabel *label_15;
+    QSpacerItem *horizontalSpacer_43;
+    QLabel *label_16;
+    QHBoxLayout *horizontalLayout_16;
+    QRadioButton *radioButton_2;
+    QRadioButton *radioButton;
     QSpacerItem *horizontalSpacer_24;
+    QSpacerItem *verticalSpacer_8;
+    QLabel *label_17;
+    QHBoxLayout *horizontalLayout_18;
+    QRadioButton *radioButton_3;
+    QRadioButton *radioButton_4;
+    QSpacerItem *horizontalSpacer_44;
+    QSpacerItem *verticalSpacer_6;
     QSpacerItem *verticalSpacer_4;
     QStatusBar *statusbar;
 
@@ -261,6 +282,12 @@ public:
 
         horizontalLayout_3->addWidget(appendDate);
 
+        changeDirectory = new QPushButton(groupBox_2);
+        changeDirectory->setObjectName(QStringLiteral("changeDirectory"));
+        changeDirectory->setMinimumSize(QSize(0, 0));
+
+        horizontalLayout_3->addWidget(changeDirectory);
+
         viewLog = new QPushButton(groupBox_2);
         viewLog->setObjectName(QStringLiteral("viewLog"));
 
@@ -290,6 +317,12 @@ public:
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
         cmdFreq = new QPushButton(groupBox_3);
         cmdFreq->setObjectName(QStringLiteral("cmdFreq"));
+        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(cmdFreq->sizePolicy().hasHeightForWidth());
+        cmdFreq->setSizePolicy(sizePolicy3);
+        cmdFreq->setMinimumSize(QSize(0, 0));
 
         horizontalLayout_6->addWidget(cmdFreq);
 
@@ -402,11 +435,11 @@ public:
         logUpdate = new QPushButton(centralwidget);
         logUpdate->setObjectName(QStringLiteral("logUpdate"));
         logUpdate->setEnabled(true);
-        QSizePolicy sizePolicy3(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(logUpdate->sizePolicy().hasHeightForWidth());
-        logUpdate->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(logUpdate->sizePolicy().hasHeightForWidth());
+        logUpdate->setSizePolicy(sizePolicy4);
         logUpdate->setMinimumSize(QSize(0, 10));
         logUpdate->setMaximumSize(QSize(246, 64));
         logUpdate->setBaseSize(QSize(0, 32));
@@ -415,11 +448,11 @@ public:
 
         logConsole = new QPlainTextEdit(centralwidget);
         logConsole->setObjectName(QStringLiteral("logConsole"));
-        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Expanding);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(logConsole->sizePolicy().hasHeightForWidth());
-        logConsole->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(logConsole->sizePolicy().hasHeightForWidth());
+        logConsole->setSizePolicy(sizePolicy5);
         logConsole->setMaximumSize(QSize(246, 16777215));
 
         verticalLayout_8->addWidget(logConsole);
@@ -504,17 +537,15 @@ public:
         tabWidget->addTab(tab_3, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
-        horizontalLayout_10 = new QHBoxLayout(tab_2);
-        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
-        verticalLayout_4 = new QVBoxLayout();
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_12 = new QVBoxLayout(tab_2);
+        verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
         groupBox_4 = new QGroupBox(tab_2);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
-        groupBox_4->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
+        groupBox_4->setSizePolicy(sizePolicy6);
         verticalLayout_6 = new QVBoxLayout(groupBox_4);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         horizontalLayout_11 = new QHBoxLayout();
@@ -691,15 +722,20 @@ public:
         verticalLayout_6->addLayout(horizontalLayout_12);
 
 
-        verticalLayout_4->addWidget(groupBox_4);
+        verticalLayout_12->addWidget(groupBox_4);
 
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
+        horizontalLayout_10->setContentsMargins(-1, 10, -1, -1);
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         groupBox_5 = new QGroupBox(tab_2);
         groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        QSizePolicy sizePolicy6(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
-        groupBox_5->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
+        groupBox_5->setSizePolicy(sizePolicy7);
         verticalLayout_7 = new QVBoxLayout(groupBox_5);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         label_12 = new QLabel(groupBox_5);
@@ -812,16 +848,114 @@ public:
 
         horizontalLayout_10->addLayout(verticalLayout_4);
 
+        horizontalSpacer_45 = new QSpacerItem(13, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_10->addItem(horizontalSpacer_45);
+
         verticalLayout_5 = new QVBoxLayout();
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
         verticalLayout_5->setContentsMargins(-1, -1, 0, -1);
+        groupBox_6 = new QGroupBox(tab_2);
+        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
+        verticalLayout_11 = new QVBoxLayout(groupBox_6);
+        verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
+        horizontalLayout_20 = new QHBoxLayout();
+        horizontalLayout_20->setObjectName(QStringLiteral("horizontalLayout_20"));
+        label_14 = new QLabel(groupBox_6);
+        label_14->setObjectName(QStringLiteral("label_14"));
+
+        horizontalLayout_20->addWidget(label_14);
+
+        label_15 = new QLabel(groupBox_6);
+        label_15->setObjectName(QStringLiteral("label_15"));
+
+        horizontalLayout_20->addWidget(label_15);
+
+        horizontalSpacer_43 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_20->addItem(horizontalSpacer_43);
+
+
+        verticalLayout_11->addLayout(horizontalLayout_20);
+
+        label_16 = new QLabel(groupBox_6);
+        label_16->setObjectName(QStringLiteral("label_16"));
+
+        verticalLayout_11->addWidget(label_16);
+
+        horizontalLayout_16 = new QHBoxLayout();
+        horizontalLayout_16->setObjectName(QStringLiteral("horizontalLayout_16"));
+        radioButton_2 = new QRadioButton(groupBox_6);
+        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
+        radioButton_2->setEnabled(false);
+        radioButton_2->setCheckable(true);
+
+        horizontalLayout_16->addWidget(radioButton_2);
+
+        radioButton = new QRadioButton(groupBox_6);
+        radioButton->setObjectName(QStringLiteral("radioButton"));
+        radioButton->setEnabled(false);
+        radioButton->setCheckable(true);
+        radioButton->setChecked(true);
+        radioButton->setAutoExclusive(false);
+
+        horizontalLayout_16->addWidget(radioButton);
+
         horizontalSpacer_24 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        verticalLayout_5->addItem(horizontalSpacer_24);
+        horizontalLayout_16->addItem(horizontalSpacer_24);
+
+
+        verticalLayout_11->addLayout(horizontalLayout_16);
+
+        verticalSpacer_8 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_11->addItem(verticalSpacer_8);
+
+        label_17 = new QLabel(groupBox_6);
+        label_17->setObjectName(QStringLiteral("label_17"));
+
+        verticalLayout_11->addWidget(label_17);
+
+        horizontalLayout_18 = new QHBoxLayout();
+        horizontalLayout_18->setObjectName(QStringLiteral("horizontalLayout_18"));
+        radioButton_3 = new QRadioButton(groupBox_6);
+        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
+        radioButton_3->setEnabled(false);
+        radioButton_3->setCheckable(true);
+        radioButton_3->setChecked(true);
+        radioButton_3->setAutoExclusive(false);
+
+        horizontalLayout_18->addWidget(radioButton_3);
+
+        radioButton_4 = new QRadioButton(groupBox_6);
+        radioButton_4->setObjectName(QStringLiteral("radioButton_4"));
+        radioButton_4->setEnabled(false);
+        radioButton_4->setCheckable(true);
+        radioButton_4->setAutoExclusive(false);
+
+        horizontalLayout_18->addWidget(radioButton_4);
+
+        horizontalSpacer_44 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_18->addItem(horizontalSpacer_44);
+
+
+        verticalLayout_11->addLayout(horizontalLayout_18);
+
+
+        verticalLayout_5->addWidget(groupBox_6);
+
+        verticalSpacer_6 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_5->addItem(verticalSpacer_6);
 
 
         horizontalLayout_10->addLayout(verticalLayout_5);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_10);
 
         tabWidget->addTab(tab_2, QString());
 
@@ -858,6 +992,7 @@ public:
         label_9->setText(QApplication::translate("MainWindow", ".txt", 0));
         logToFile->setText(QApplication::translate("MainWindow", "Log to file", 0));
         appendDate->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
+        changeDirectory->setText(QApplication::translate("MainWindow", "Change directory", 0));
         viewLog->setText(QApplication::translate("MainWindow", "View a log", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Send command", 0));
         cmdFreq->setText(QApplication::translate("MainWindow", "FREQUENCY", 0));
@@ -880,7 +1015,7 @@ public:
         syncSysTime->setText(QApplication::translate("MainWindow", "Sync RTC to System time", 0));
         sendTime->setText(QApplication::translate("MainWindow", "Send custom time", 0));
         groupBox_5->setTitle(QApplication::translate("MainWindow", "Log options", 0));
-        label_12->setText(QApplication::translate("MainWindow", "SD Options", 0));
+        label_12->setText(QApplication::translate("MainWindow", "SD options", 0));
         label_10->setText(QApplication::translate("MainWindow", "SD log filename", 0));
         label_11->setText(QApplication::translate("MainWindow", ".txt", 0));
         logToFileSD->setText(QApplication::translate("MainWindow", "Log to SD", 0));
@@ -889,6 +1024,15 @@ public:
         logBluetooth->setText(QApplication::translate("MainWindow", "Log through Bluetooth", 0));
         logUSB->setText(QApplication::translate("MainWindow", "Log through USB", 0));
         applyLog->setText(QApplication::translate("MainWindow", "Apply settings", 0));
+        groupBox_6->setTitle(QApplication::translate("MainWindow", "Current settings", 0));
+        label_14->setText(QApplication::translate("MainWindow", "Date & Time: ", 0));
+        label_15->setText(QApplication::translate("MainWindow", "2015/07/03 16:23:51", 0));
+        label_16->setText(QApplication::translate("MainWindow", "SD settings", 0));
+        radioButton_2->setText(QApplication::translate("MainWindow", "Log to SD", 0));
+        radioButton->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
+        label_17->setText(QApplication::translate("MainWindow", "Communication settings", 0));
+        radioButton_3->setText(QApplication::translate("MainWindow", "Log through Bluetooth", 0));
+        radioButton_4->setText(QApplication::translate("MainWindow", "Log through USB", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Control Panel", 0));
     } // retranslateUi
 

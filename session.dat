@@ -1,10 +1,11 @@
-log_test
+my_test_log
+false
 true
-true
-50
+10000
 COM3
 115200
 8
 0
 1
 0
+C:/Qt/Projects/BarkingSquirrel/../ConsoleGet

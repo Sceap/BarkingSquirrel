@@ -101,8 +101,15 @@ mainWindow::mainWindow() : QMainWindow(),
     connect(ui->actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
     connect(ui->actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
     connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
-    connect(ui->viewLog,SIGNAL(clicked()),file_viewer,SLOT(show()));
 
+
+    logMap = new QSignalMapper(this);
+    logMap->setMapping(ui->viewLog,logDirectory);
+    connect(ui->viewLog,SIGNAL(clicked()),logMap,SLOT(map()));
+    connect(logMap,SIGNAL(mapped(QString)),file_viewer,SLOT(show_dialog(QString)));
+
+    // Connectring the button to change the log directory
+    connect(ui->changeDirectory,SIGNAL(clicked()),this,SLOT(changeLogDirectory()));
 
     // Creating graphs instances by linking them to UI elements
     graph[0] = ui->graphXY;
@@ -274,6 +281,7 @@ void mainWindow::restoreSession() {
     protocole->port->setStopBits((QSerialPort::StopBits)sessionLine.readLine().toShort());
     protocole->port->setFlowControl((QSerialPort::FlowControl)sessionLine.readLine().toShort());
     settings->setDefaults(protocole->port);
+    logDirectory = sessionLine.readLine();
     session->close();
 }
 
@@ -294,10 +302,23 @@ void mainWindow::saveSession() {
     sessionLine << settings->settings().parity << endl;
     sessionLine << settings->settings().stopBits << endl;
     sessionLine << settings->settings().flowControl << endl;
+    sessionLine << logDirectory << endl;
 
     session->close();
 }
 
+void mainWindow::changeLogDirectory() {
+    QDir dir("./");
+    QString myDir = dir.relativeFilePath(QFileDialog::getExistingDirectory(this,
+                                                tr("Open Log"), logDirectory));
+    if(myDir.at(0)=='.'&&myDir.at(1)=='.') {
+        qDebug() << myDir;
+        myDir = dir.absoluteFilePath(myDir);
+    }
+    logDirectory = myDir;
+    logMap->setMapping(ui->viewLog,logDirectory);
+    saveSession();
+}
 
 /*  Simple function used to extract the date from       */
 /*  a frame                                             */
