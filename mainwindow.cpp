@@ -396,7 +396,7 @@ void mainWindow::updateData() {
     for(int i=4;i<7;i++)
         updateTimeGraph(protocole->lastValue[i-3],i);
 
-    updateTimeGraph(600-protocole->lastValue[8],7);
+    updateTimeGraph(600-protocole->lastValue[7],7);
 
     updateConsole(protocole->lastString);
 

@@ -176,6 +176,7 @@ char dummy[61][68] = {
 // In order for the sync process - and therefore the whole function -
 // to work properly, each frame must be separated by an ASCII \n (0x0D)
 // character
+/*
 void Protocole::fetch() {
     // i is used to compute the time spent
     // between what the thread thinks is one
@@ -205,7 +206,7 @@ void Protocole::fetch() {
     i = (i+1)%200;
     j = (j+1)%61;
 
-    /*
+    /
     nbValues = 8;
     setRegEx();
 
@@ -217,7 +218,7 @@ void Protocole::fetch() {
 
         emit updateData();
     }
-    */
+    /
 
     // Every thread-second, print the real-second
     if(!i) {
@@ -290,6 +291,140 @@ void Protocole::fetch() {
                 port->readAll();
             }
         }
+    }
+}*/
+
+
+short extractValue(char * val) {
+    return (((((unsigned short) val[1])<<8)&0xFF00) | (~val[0])&0x00FF);
+}
+
+void Protocole::fetch(void) {
+    static enum {
+        init,
+        sepOrLSB,
+        LSB,
+        syncing,
+        synced
+    } state = init;
+    static int frameLength = 0;
+    static int nbValue = 0;
+
+    static QString pattern;
+
+    char tmp, tmpMSB, tmpLSB;
+
+
+    switch(state) {
+        case init:
+        if(port->bytesAvailable()) {
+            frameLength = 0;
+            nbValue = 0;
+            tmp = port->read(1).at(0);
+            if(tmp==0x7F)
+                state = sepOrLSB;
+        }
+            break;
+        case sepOrLSB:
+        if(port->bytesAvailable()) {
+            tmp = port->read(1).at(0);
+            if(tmp==0x7F) {
+                state = syncing;
+            } else {
+                port->read(1);
+                state = LSB;
+            }
+        }
+            break;
+        case LSB:
+        if(port->bytesAvailable()>2) {
+            tmpMSB = port->read(1).at(0);
+            tmpLSB = port->read(1).at(0);
+
+            if(tmpMSB==0x7F && tmpLSB==0x7F) {
+                state = syncing;
+            }
+        }
+            break;
+        case syncing:
+        if(port->bytesAvailable()>2) {
+            tmpMSB = port->read(1).at(0);
+            tmpLSB = port->read(1).at(0);
+
+            short val = (short)tmpMSB<<8 | tmpLSB;
+            qDebug() << val;
+
+            if(tmpMSB==0x7F && tmpLSB==0x7F) {
+                state = synced;
+                pattern = "";
+                for(int i=0;i<nbValue;i++) {
+                    pattern+="([\\x00-\xFF][\\x00-\xFF])";
+                }
+                pattern+="\x7F\x7F";
+
+                rx = new QRegExp(pattern);
+            } else {
+                frameLength+=2;
+                nbValue+=1;
+            }
+        }
+            break;
+        case synced:
+        if(port->bytesAvailable()>frameLength+2) {
+
+            QString buffer = "";
+            for(int i=0;i<nbValue;i++) {
+                buffer+= port->read(1).at(0);
+                buffer+= port->read(1).at(0);
+            }
+            buffer+=port->read(1).at(0);
+            buffer+=port->read(1).at(0);
+
+            qDebug() << frameLength;
+
+            if(rx->indexIn((buffer),0)>-1) {
+
+                int hour = ((unsigned char)rx->cap(2).toLatin1().data()[1]) >> 2;
+                int min = ((unsigned char)rx->cap(2).toLatin1().data()[0]);
+
+
+                int sec = ((unsigned char)rx->cap(3).toLatin1().data()[1]) >> 2;
+                int csec = ((unsigned char)rx->cap(3).toLatin1().data()[0]);
+
+
+                lastString = "";
+                lastString+="|20150000";
+                lastString+=QString("%1").arg(abs(hour)%24, 2, 10, QChar('0'));
+                lastString+=QString("%1").arg(abs(min)%60, 2, 10, QChar('0'));
+                lastString+=QString("%1").arg(abs(sec)%60, 2, 10, QChar('0'));
+                lastString+=QString("%1").arg(abs(csec)%100, 2, 10, QChar('0'));
+
+
+                lastString+=',';
+
+                for(int i=3;i<nbValue;i++) {
+                    lastValue[i-2] = extractValue(rx->cap(i+1).toLatin1().data());
+                    if(lastValue[i-2]>0) {
+                       lastString+="+";
+                       lastString+=QString("%1").arg(((int)lastValue[i-2]), 5, 10, QChar('0'));
+                    }
+                    else {
+                        lastString+="-";
+                        lastString+=QString("%1").arg((-(int)lastValue[i-2]), 5, 10, QChar('0'));
+                    }
+                    if(i<nbValue-1)
+                        lastString+=",";
+                }
+
+                lastString += "|";
+
+
+                emit updateData();
+            } else {
+                state = init;
+            }
+        }
+            break;
     }
 }
 

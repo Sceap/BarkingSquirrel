@@ -1,11 +1,11 @@
 log_file
-false
 true
-100
+true
+1000
 COM4
 115200
 8
 0
 1
 0
-C:/Qt/Projects/BarkingSquirrel/../ConsoleGet
+
