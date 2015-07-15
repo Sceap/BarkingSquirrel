@@ -39,6 +39,7 @@ class mainWindow : public QMainWindow
 
         void sendCommand(QString cmd);
         void sendCommandBox(QString cmd);
+        void sendCustomCommand();
 
         void getSysTime();
         void getRTCTime();

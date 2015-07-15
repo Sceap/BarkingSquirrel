@@ -22,6 +22,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
@@ -69,7 +70,7 @@ public:
     QSpinBox *cmdValue;
     QHBoxLayout *horizontalLayout_8;
     QLabel *label;
-    QLineEdit *cmdCusom;
+    QLineEdit *cmdCustom;
     QPushButton *cmdCustomSend;
     QSpacerItem *horizontalSpacer_37;
     QSpacerItem *horizontalSpacer_36;
@@ -89,6 +90,12 @@ public:
     QPlainTextEdit *logConsole;
     QSpacerItem *horizontalSpacer_38;
     QTabWidget *tabWidget;
+    QWidget *tab_4;
+    QHBoxLayout *horizontalLayout_21;
+    QCustomPlot *weightGraph;
+    QSpacerItem *horizontalSpacer_46;
+    QProgressBar *weightBar;
+    QSpacerItem *horizontalSpacer_47;
     QWidget *tab;
     QHBoxLayout *horizontalLayout_9;
     QVBoxLayout *verticalLayout_3;
@@ -200,7 +207,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1163, 696);
+        MainWindow->resize(1217, 696);
         MainWindow->setStyleSheet(QStringLiteral(""));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
@@ -357,10 +364,10 @@ public:
 
         horizontalLayout_8->addWidget(label);
 
-        cmdCusom = new QLineEdit(groupBox_3);
-        cmdCusom->setObjectName(QStringLiteral("cmdCusom"));
+        cmdCustom = new QLineEdit(groupBox_3);
+        cmdCustom->setObjectName(QStringLiteral("cmdCustom"));
 
-        horizontalLayout_8->addWidget(cmdCusom);
+        horizontalLayout_8->addWidget(cmdCustom);
 
         cmdCustomSend = new QPushButton(groupBox_3);
         cmdCustomSend->setObjectName(QStringLiteral("cmdCustomSend"));
@@ -470,6 +477,34 @@ public:
         tabWidget->setTabShape(QTabWidget::Rounded);
         tabWidget->setElideMode(Qt::ElideNone);
         tabWidget->setMovable(false);
+        tab_4 = new QWidget();
+        tab_4->setObjectName(QStringLiteral("tab_4"));
+        horizontalLayout_21 = new QHBoxLayout(tab_4);
+        horizontalLayout_21->setObjectName(QStringLiteral("horizontalLayout_21"));
+        weightGraph = new QCustomPlot(tab_4);
+        weightGraph->setObjectName(QStringLiteral("weightGraph"));
+
+        horizontalLayout_21->addWidget(weightGraph);
+
+        horizontalSpacer_46 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_21->addItem(horizontalSpacer_46);
+
+        weightBar = new QProgressBar(tab_4);
+        weightBar->setObjectName(QStringLiteral("weightBar"));
+        weightBar->setLayoutDirection(Qt::LeftToRight);
+        weightBar->setMaximum(600);
+        weightBar->setValue(24);
+        weightBar->setTextVisible(false);
+        weightBar->setOrientation(Qt::Vertical);
+
+        horizontalLayout_21->addWidget(weightBar);
+
+        horizontalSpacer_47 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_21->addItem(horizontalSpacer_47);
+
+        tabWidget->addTab(tab_4, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         horizontalLayout_9 = new QHBoxLayout(tab);
@@ -975,7 +1010,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1002,6 +1037,7 @@ public:
         label->setText(QApplication::translate("MainWindow", "Custom command: ", 0));
         cmdCustomSend->setText(QApplication::translate("MainWindow", "Send", 0));
         logUpdate->setText(QApplication::translate("MainWindow", "Fetch frames", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("MainWindow", "Weight Sensor", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Accelerometer", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Gyroscope", 0));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Configure RTC", 0));

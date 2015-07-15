@@ -203,3 +203,12 @@ QComboBox::drop-down {
     margin:9 3;
     border-image: url(drop.png) 0 0 0 0 stretch stretch;
 }
+
+QProgressBar {
+    border: 1 solid #E0E0E0;
+    border-radius: 2;
+    
+}
+QProgressBar::chunk {
+    background: #90CAF9;
+}

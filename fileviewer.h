@@ -5,16 +5,16 @@
 #include <QVector>
 #include "qzoomplot.h"
 
-namespace Ui {
-class FileViewer;
-}
-
 
 typedef struct {
     QCPItemLine *hLine;
     QCPItemLine *vLine;
 } QCPCursor;
 
+
+namespace Ui {
+class FileViewer;
+}
 
 class FileViewer : public QWidget
 {

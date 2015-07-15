@@ -1,8 +1,8 @@
-my_test_log
+log_file
 false
 true
-10000
-COM3
+100
+COM4
 115200
 8
 0

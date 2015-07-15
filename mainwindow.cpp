@@ -62,6 +62,8 @@ mainWindow::mainWindow() : QMainWindow(),
     y[5] = new QVector<double>(200);
     y[6] = new QVector<double>(200);
 
+    y[7] = new QVector<double>(200);
+
     // The SettingsDialog instance handles the serial port configuration
     // window
     settings = new SettingsDialog();
@@ -101,6 +103,7 @@ mainWindow::mainWindow() : QMainWindow(),
     connect(ui->actionConnect, SIGNAL(clicked()), this, SLOT(openSerialPort()));
     connect(ui->actionDisconnect, SIGNAL(clicked()), this, SLOT(closeSerialPort()));
     connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
+    connect(ui->cmdCustomSend,SIGNAL(clicked()),this,SLOT(sendCustomCommand()));
 
 
     logMap = new QSignalMapper(this);
@@ -119,6 +122,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[4] = ui->gyroX;
     graph[5] = ui->gyroY;
     graph[6] = ui->gyroZ;
+    graph[7] = ui->weightGraph;
 
     // The pen is used to draw a dot on XY graphs
     QPen pen;
@@ -145,7 +149,7 @@ mainWindow::mainWindow() : QMainWindow(),
         "X","Y","Z",    // Accelerometer's three axis
         "X","Y","Z"     // Gyroscope's three axis
     };
-    for(int i=1;i<7;i++) {
+    for(int i=1;i<8;i++) {
         // Only one curve on those graphs : axis/time
         graph[i]->addGraph();
         // The datas are stored in x[1] (time) and y[i] vectors
@@ -172,6 +176,8 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[5]->graph(0)->setPen(line_green);
     graph[6]->graph(0)->setPen(line_red);
 
+    graph[7]->yAxis->setRange(0,600);
+
     // Populating the XY graph
     // Only one curve on this graph : X axis /Y axis of accelerometer
     graph[0]->addGraph();
@@ -190,7 +196,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[0]->setInteraction(QCP::iRangeZoom, true);
 
     // For each graph, making the lines lighter in order to clean up the view
-    for(int i=0;i<7;i++) {
+    for(int i=0;i<8;i++) {
         graph[i]->xAxis->setBasePen(QPen(QColor(195,195,195)));
         graph[i]->xAxis->setTickPen(QPen(QColor(195,195,195)));
         graph[i]->xAxis->setSubTickPen(QPen(QColor(195,195,195)));
@@ -235,9 +241,15 @@ void mainWindow::update() {
     // It is no use updating graphs that aren't
     // visible
     int graphs = -1;
-    if(ui->tabWidget->currentIndex()==0)
-        graphs = 0;
+    if(ui->tabWidget->currentIndex()==0) {
+        graph[7]->graph(0)->setData(*x[1],*y[7]);
+        graph[7]->xAxis->setRange(x[1]->at(0),x[1]->last());
+        graph[7]->replot();
+        ui->weightBar->setValue((int)y[7]->last());
+    }
     if(ui->tabWidget->currentIndex()==1)
+        graphs = 0;
+    if(ui->tabWidget->currentIndex()==2)
         graphs = 3;
 
     if(graphs!=-1)
@@ -376,12 +388,15 @@ void mainWindow::updateData() {
         log->open(QIODevice::Append);
     }
 
+    QDateTime d = QDateTime::currentDateTime();
     // Updating the different datas
     updateYAxis(protocole->lastValue[5]);
-    updateXAxis(protocole->lastValue[4],getDate(protocole->lastString));
+    updateXAxis(protocole->lastValue[4],/*d.toMSecsSinceEpoch());//*/getDate(protocole->lastString));
     updateTimeGraph(protocole->lastValue[6],3);
     for(int i=4;i<7;i++)
         updateTimeGraph(protocole->lastValue[i-3],i);
+
+    updateTimeGraph(600-protocole->lastValue[8],7);
 
     updateConsole(protocole->lastString);
 
@@ -406,6 +421,10 @@ void mainWindow::sendCommand(QString cmd) {
 void mainWindow::sendCommandBox(QString cmd) {
     QString number = QString("%1").arg(ui->cmdValue->value(), 5, 10, QChar('0'));
     sendCommand(QString(cmd+number));
+}
+
+void mainWindow::sendCustomCommand() {
+    sendCommand(ui->cmdCustom->text());
 }
 
 /*  Getting the system time and sending it to the RTC   */
@@ -452,6 +471,26 @@ void mainWindow::sendRTCTime() {
 /*  This function update the values related to the      */
 /*  accelerometer's X Axis (X graph, XY graph)          */
 void mainWindow::updateXAxis(double value, double time) {
+    static int sinceLastOvershoot = 100;
+    static int overshootCounter = 0;
+    static double lastValue = 0;
+
+    if(abs(value-lastValue)>1000) {
+        overshootCounter++;
+        sinceLastOvershoot = 0;
+    }
+
+    sinceLastOvershoot++;
+    if(sinceLastOvershoot > 200) {
+        overshootCounter = 0;
+    }
+
+    if(overshootCounter >= 25) {
+        qDebug() << "Instability on X axis detected";
+    }
+
+    lastValue = value;
+
     // Remove the first value from X graph
     (*y[1]).remove(0,1);
     // Append the new value at the end of X graph
@@ -472,6 +511,27 @@ void mainWindow::updateXAxis(double value, double time) {
 /*  This function update the values related to the      */
 /*  accelerometer's Y Axis (Y graph, XY graph)          */
 void mainWindow::updateYAxis(double value) {
+    static int sinceLastOvershoot = 100;
+    static int overshootCounter = 0;
+    static double lastValue = 0;
+
+    if(abs(value-lastValue)>1000) {
+        overshootCounter++;
+        sinceLastOvershoot = 0;
+    }
+
+    sinceLastOvershoot++;
+    if(sinceLastOvershoot > 200) {
+        overshootCounter = 0;
+    }
+
+    lastValue = value;
+
+    if(overshootCounter >= 25) {
+        qDebug() << "Instability on Y axis detected";
+    }
+
+
     // Remove first value from Y graph
     (*y[2]).remove(0,1);
     // Append new value to the end of Y graph
