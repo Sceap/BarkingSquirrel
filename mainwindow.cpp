@@ -105,6 +105,8 @@ mainWindow::mainWindow() : QMainWindow(),
     connect(ui->actionConfigure, SIGNAL(clicked()), settings, SLOT(show()));
     connect(ui->cmdCustomSend,SIGNAL(clicked()),this,SLOT(sendCustomCommand()));
 
+    connect(ui->applyLog, SIGNAL(clicked()),this,SLOT(applyLog()));
+
 
     logMap = new QSignalMapper(this);
     logMap->setMapping(ui->viewLog,logDirectory);
@@ -220,7 +222,7 @@ mainWindow::mainWindow() : QMainWindow(),
 
     // Creating a Timer for frame fetching
     serialFetch = new QTimer();
-    serialFetch->setInterval(5);
+    serialFetch->setInterval(2);
     connect(serialFetch,SIGNAL(timeout()),protocole,SLOT(fetch()));
 
     // Creating a Timer for GUI update
@@ -252,6 +254,12 @@ void mainWindow::update() {
     if(ui->tabWidget->currentIndex()==2)
         graphs = 3;
 
+    if(ui->tabWidget->currentIndex()==3) {
+        ui->statusLogBluetooth->setChecked(((protocole->lastStatus)&(0x0800))!=0);
+        ui->statusLogUSB->setChecked(((protocole->lastStatus)&(0x1000))!=0);
+        ui->statusLogSD->setChecked(((protocole->lastStatus)&(0x0400))!=0);
+    }
+
     if(graphs!=-1)
     for(int i=1+graphs;i<4+graphs;i++) {
         graph[i]->graph(0)->setData(*x[1],*y[i]);
@@ -272,6 +280,22 @@ void mainWindow::update_c() {
     ui->logConsole->setPlainText(str);
 
     str = "";
+}
+
+
+void mainWindow::applyLog() {
+    QString usbStr = "#USB0000";
+    usbStr += (ui->logUSB->isChecked()?"1":"0");
+    QString bluStr = "#BLU0000";
+    bluStr += (ui->logBluetooth->isChecked()?"1":"0");
+    QString sdcStr = "#SDC0000";
+    sdcStr += (ui->logToFileSD->isChecked()?"1":"0");
+
+    protocole->send_str(usbStr.toLatin1().data());
+    protocole->send_char('.');
+    protocole->send_str(bluStr.toLatin1().data());
+    protocole->send_char('.');
+    protocole->send_str(sdcStr.toLatin1().data());
 }
 
 
@@ -481,7 +505,7 @@ void mainWindow::updateXAxis(double value, double time) {
     }
 
     sinceLastOvershoot++;
-    if(sinceLastOvershoot > 200) {
+    if(sinceLastOvershoot > 10) {
         overshootCounter = 0;
     }
 
@@ -521,7 +545,7 @@ void mainWindow::updateYAxis(double value) {
     }
 
     sinceLastOvershoot++;
-    if(sinceLastOvershoot > 200) {
+    if(sinceLastOvershoot > 10) {
         overshootCounter = 0;
     }
 

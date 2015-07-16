@@ -504,7 +504,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideNone</enum>
@@ -1317,7 +1317,7 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_16">
                    <item>
-                    <widget class="QRadioButton" name="radioButton_2">
+                    <widget class="QRadioButton" name="statusLogSD">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -1327,10 +1327,16 @@
                      <property name="checkable">
                       <bool>true</bool>
                      </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                     <property name="autoExclusive">
+                      <bool>false</bool>
+                     </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QRadioButton" name="radioButton">
+                    <widget class="QRadioButton" name="statusAppendDateSD">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -1389,7 +1395,7 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_18">
                    <item>
-                    <widget class="QRadioButton" name="radioButton_3">
+                    <widget class="QRadioButton" name="statusLogBluetooth">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -1408,7 +1414,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QRadioButton" name="radioButton_4">
+                    <widget class="QRadioButton" name="statusLogUSB">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>

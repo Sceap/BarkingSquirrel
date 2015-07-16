@@ -1,7 +1,7 @@
 log_file
 true
 true
-1000
+100
 COM4
 115200
 8

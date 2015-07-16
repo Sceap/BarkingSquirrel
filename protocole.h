@@ -25,29 +25,27 @@ class Protocole : public QWidget
         void send_str(const char * str);
         void send_char(char str);
 
-        void addValue();
-        void addValues(int n);
-
-        void setRegEx();
-
-        void setBufferedValue(int buff);
-
         QSerialPort *port;
-
-        int nbValues;
-
-        QVector<double> values[16];
-        QVector<QString> strings;
 
         double lastValue[16];
         QString lastString;
-
-        bool synced;
-
+        unsigned short lastStatus;
     private:
         QRegExp *rx;
-        QString oldPattern;
         int bufferedValue;
+
+
+        enum {
+            init,
+            sepOrLSB,
+            LSB,
+            syncing,
+            synced
+        } state;
+        int frameLength;
+        int nbValue;
+
+        QString pattern;
 
     private slots:
         void fetch();

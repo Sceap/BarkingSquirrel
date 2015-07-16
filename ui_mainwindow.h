@@ -190,14 +190,14 @@ public:
     QSpacerItem *horizontalSpacer_43;
     QLabel *label_16;
     QHBoxLayout *horizontalLayout_16;
-    QRadioButton *radioButton_2;
-    QRadioButton *radioButton;
+    QRadioButton *statusLogSD;
+    QRadioButton *statusAppendDateSD;
     QSpacerItem *horizontalSpacer_24;
     QSpacerItem *verticalSpacer_8;
     QLabel *label_17;
     QHBoxLayout *horizontalLayout_18;
-    QRadioButton *radioButton_3;
-    QRadioButton *radioButton_4;
+    QRadioButton *statusLogBluetooth;
+    QRadioButton *statusLogUSB;
     QSpacerItem *horizontalSpacer_44;
     QSpacerItem *verticalSpacer_6;
     QSpacerItem *verticalSpacer_4;
@@ -921,21 +921,23 @@ public:
 
         horizontalLayout_16 = new QHBoxLayout();
         horizontalLayout_16->setObjectName(QStringLiteral("horizontalLayout_16"));
-        radioButton_2 = new QRadioButton(groupBox_6);
-        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
-        radioButton_2->setEnabled(false);
-        radioButton_2->setCheckable(true);
+        statusLogSD = new QRadioButton(groupBox_6);
+        statusLogSD->setObjectName(QStringLiteral("statusLogSD"));
+        statusLogSD->setEnabled(false);
+        statusLogSD->setCheckable(true);
+        statusLogSD->setChecked(true);
+        statusLogSD->setAutoExclusive(false);
 
-        horizontalLayout_16->addWidget(radioButton_2);
+        horizontalLayout_16->addWidget(statusLogSD);
 
-        radioButton = new QRadioButton(groupBox_6);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
-        radioButton->setEnabled(false);
-        radioButton->setCheckable(true);
-        radioButton->setChecked(true);
-        radioButton->setAutoExclusive(false);
+        statusAppendDateSD = new QRadioButton(groupBox_6);
+        statusAppendDateSD->setObjectName(QStringLiteral("statusAppendDateSD"));
+        statusAppendDateSD->setEnabled(false);
+        statusAppendDateSD->setCheckable(true);
+        statusAppendDateSD->setChecked(true);
+        statusAppendDateSD->setAutoExclusive(false);
 
-        horizontalLayout_16->addWidget(radioButton);
+        horizontalLayout_16->addWidget(statusAppendDateSD);
 
         horizontalSpacer_24 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -955,22 +957,22 @@ public:
 
         horizontalLayout_18 = new QHBoxLayout();
         horizontalLayout_18->setObjectName(QStringLiteral("horizontalLayout_18"));
-        radioButton_3 = new QRadioButton(groupBox_6);
-        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
-        radioButton_3->setEnabled(false);
-        radioButton_3->setCheckable(true);
-        radioButton_3->setChecked(true);
-        radioButton_3->setAutoExclusive(false);
+        statusLogBluetooth = new QRadioButton(groupBox_6);
+        statusLogBluetooth->setObjectName(QStringLiteral("statusLogBluetooth"));
+        statusLogBluetooth->setEnabled(false);
+        statusLogBluetooth->setCheckable(true);
+        statusLogBluetooth->setChecked(true);
+        statusLogBluetooth->setAutoExclusive(false);
 
-        horizontalLayout_18->addWidget(radioButton_3);
+        horizontalLayout_18->addWidget(statusLogBluetooth);
 
-        radioButton_4 = new QRadioButton(groupBox_6);
-        radioButton_4->setObjectName(QStringLiteral("radioButton_4"));
-        radioButton_4->setEnabled(false);
-        radioButton_4->setCheckable(true);
-        radioButton_4->setAutoExclusive(false);
+        statusLogUSB = new QRadioButton(groupBox_6);
+        statusLogUSB->setObjectName(QStringLiteral("statusLogUSB"));
+        statusLogUSB->setEnabled(false);
+        statusLogUSB->setCheckable(true);
+        statusLogUSB->setAutoExclusive(false);
 
-        horizontalLayout_18->addWidget(radioButton_4);
+        horizontalLayout_18->addWidget(statusLogUSB);
 
         horizontalSpacer_44 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -1010,7 +1012,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1064,11 +1066,11 @@ public:
         label_14->setText(QApplication::translate("MainWindow", "Date & Time: ", 0));
         label_15->setText(QApplication::translate("MainWindow", "2015/07/03 16:23:51", 0));
         label_16->setText(QApplication::translate("MainWindow", "SD settings", 0));
-        radioButton_2->setText(QApplication::translate("MainWindow", "Log to SD", 0));
-        radioButton->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
+        statusLogSD->setText(QApplication::translate("MainWindow", "Log to SD", 0));
+        statusAppendDateSD->setText(QApplication::translate("MainWindow", "Append date to filename", 0));
         label_17->setText(QApplication::translate("MainWindow", "Communication settings", 0));
-        radioButton_3->setText(QApplication::translate("MainWindow", "Log through Bluetooth", 0));
-        radioButton_4->setText(QApplication::translate("MainWindow", "Log through USB", 0));
+        statusLogBluetooth->setText(QApplication::translate("MainWindow", "Log through Bluetooth", 0));
+        statusLogUSB->setText(QApplication::translate("MainWindow", "Log through USB", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Control Panel", 0));
     } // retranslateUi
 

@@ -52,6 +52,7 @@ class mainWindow : public QMainWindow
 
         void changeLogDirectory();
 
+        void applyLog();
     private:
         Ui::MainWindow *ui;
 

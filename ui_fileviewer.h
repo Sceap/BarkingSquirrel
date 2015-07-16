@@ -144,7 +144,7 @@ public:
 
         retranslateUi(FileViewer);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(FileViewer);
