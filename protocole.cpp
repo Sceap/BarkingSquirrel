@@ -25,7 +25,7 @@
 #include "protocole.h"
 #include <QDebug>
 #include <Windows.h>
-
+#include <QDateTime>
 
 // Creates and configure the serial port.
 Protocole::Protocole()
@@ -234,7 +234,7 @@ void Protocole::fetch(void) {
                 state = synced;
                 pattern = "";
                 for(int i=0;i<nbValue;i++) {
-                    pattern+="([\\x00-\xFF][\\x00-\xFF])";
+                    pattern += "(..)";
                 }
                 pattern+="\x7F\x7F";
 
@@ -266,9 +266,14 @@ void Protocole::fetch(void) {
                 int sec = ((unsigned char)rx->cap(3).toLatin1().data()[1]) >> 2;
                 int csec = ((unsigned char)rx->cap(3).toLatin1().data()[0]);
 
+                QDateTime d = QDateTime::currentDateTime();
 
-                lastString = "";
-                lastString+="|20150000";
+
+                lastString = "|";
+                lastString+=d.toString("yyyyMMdd");
+
+
+
                 lastString+=QString("%1").arg(abs(hour)%24, 2, 10, QChar('0'));
                 lastString+=QString("%1").arg(abs(min)%60, 2, 10, QChar('0'));
                 lastString+=QString("%1").arg(abs(sec)%60, 2, 10, QChar('0'));
@@ -287,10 +292,11 @@ void Protocole::fetch(void) {
                         lastString+="-";
                         lastString+=QString("%1").arg((-(int)lastValue[i-2]), 5, 10, QChar('0'));
                     }
-                    if(i<nbValue-1)
+                    if(i<nbValue)
                         lastString+=",";
                 }
                 lastStatus = extractValue(rx->cap(nbValue).toLatin1().data());
+                lastString+=QString("%1").arg(((int)lastStatus), 5, 10, QChar('0'));
 
                 lastString += "|";
 

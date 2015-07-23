@@ -232,7 +232,6 @@ mainWindow::mainWindow() : QMainWindow(),
 
     // Connecting the serial port to the updateData slot
     connect(protocole,SIGNAL(updateData()),this,SLOT(updateData()));
-
 }
 
 
