@@ -178,7 +178,7 @@ mainWindow::mainWindow() : QMainWindow(),
     graph[5]->graph(0)->setPen(line_green);
     graph[6]->graph(0)->setPen(line_red);
 
-    graph[7]->yAxis->setRange(0,600);
+    graph[7]->yAxis->setRange(0,150);
 
     // Populating the XY graph
     // Only one curve on this graph : X axis /Y axis of accelerometer
@@ -419,7 +419,7 @@ void mainWindow::updateData() {
     for(int i=4;i<7;i++)
         updateTimeGraph(protocole->lastValue[i-3],i);
 
-    updateTimeGraph(600-protocole->lastValue[7],7);
+    updateTimeGraph(protocole->lastValue[7],7);
 
     updateConsole(protocole->lastString);
 

@@ -493,7 +493,7 @@ public:
         weightBar = new QProgressBar(tab_4);
         weightBar->setObjectName(QStringLiteral("weightBar"));
         weightBar->setLayoutDirection(Qt::LeftToRight);
-        weightBar->setMaximum(600);
+        weightBar->setMaximum(150);
         weightBar->setValue(24);
         weightBar->setTextVisible(false);
         weightBar->setOrientation(Qt::Vertical);
@@ -1012,7 +1012,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(3);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
