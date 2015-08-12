@@ -212,3 +212,7 @@ QProgressBar {
 QProgressBar::chunk {
     background: #90CAF9;
 }
+
+QWidget#logo {
+    border-image: url(drsorders.png) 0 0 0 0 stretch stretch;
+}

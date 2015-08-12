@@ -572,9 +572,9 @@ void mainWindow::updateYAxis(double value) {
 /*  This function update the values stored in the graph */
 /*  'graph'                                             */
 void mainWindow::updateTimeGraph(double value, int graph) {
-    // Remove first value from Y graph
+    // Remove first value from graph
     (*y[graph]).remove(0,1);
-    // Append new value to the end of Y graph
+    // Append new value to the end of graph
     (*y[graph]).append(value);
 }
 

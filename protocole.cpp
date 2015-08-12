@@ -292,7 +292,7 @@ void Protocole::fetch(void) {
                         lastString+="-";
                         lastString+=QString("%1").arg((-(int)lastValue[i-2]), 5, 10, QChar('0'));
                     }
-                    if(i<nbValue)
+                    if(i<nbValue-2)
                         lastString+=",";
                 }
                 lastStatus = extractValue(rx->cap(nbValue).toLatin1().data());

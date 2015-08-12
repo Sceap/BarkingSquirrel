@@ -3,5 +3,6 @@
         <file>add.png</file>
         <file>drop.png</file>
         <file>remove.png</file>
+        <file>drsorders.png</file>
     </qresource>
 </RCC>

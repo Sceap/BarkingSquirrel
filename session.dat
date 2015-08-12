@@ -2,7 +2,7 @@ log_file
 true
 true
 100
-COM6
+COM15
 115200
 8
 0

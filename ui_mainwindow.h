@@ -80,9 +80,11 @@ public:
     QSpacerItem *horizontalSpacer_26;
     QSpacerItem *horizontalSpacer_30;
     QSpacerItem *horizontalSpacer_29;
+    QWidget *widget_2;
     QSpacerItem *horizontalSpacer_32;
     QSpacerItem *horizontalSpacer_31;
     QSpacerItem *horizontalSpacer_25;
+    QWidget *logo;
     QSpacerItem *horizontalSpacer;
     QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout_8;
@@ -415,6 +417,13 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer_29);
 
+        widget_2 = new QWidget(centralwidget);
+        widget_2->setObjectName(QStringLiteral("widget_2"));
+        widget_2->setBaseSize(QSize(120, 0));
+        widget_2->setStyleSheet(QStringLiteral("background:url(:/images/drsorders.png)"));
+
+        horizontalLayout->addWidget(widget_2);
+
         horizontalSpacer_32 = new QSpacerItem(13, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_32);
@@ -426,6 +435,20 @@ public:
         horizontalSpacer_25 = new QSpacerItem(13, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_25);
+
+        logo = new QWidget(centralwidget);
+        logo->setObjectName(QStringLiteral("logo"));
+        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Maximum);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(logo->sizePolicy().hasHeightForWidth());
+        logo->setSizePolicy(sizePolicy4);
+        logo->setMinimumSize(QSize(171, 128));
+        logo->setContextMenuPolicy(Qt::NoContextMenu);
+        logo->setAutoFillBackground(true);
+        logo->setStyleSheet(QStringLiteral(""));
+
+        horizontalLayout->addWidget(logo);
 
         horizontalSpacer = new QSpacerItem(13, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -442,11 +465,11 @@ public:
         logUpdate = new QPushButton(centralwidget);
         logUpdate->setObjectName(QStringLiteral("logUpdate"));
         logUpdate->setEnabled(true);
-        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(logUpdate->sizePolicy().hasHeightForWidth());
-        logUpdate->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(logUpdate->sizePolicy().hasHeightForWidth());
+        logUpdate->setSizePolicy(sizePolicy5);
         logUpdate->setMinimumSize(QSize(0, 10));
         logUpdate->setMaximumSize(QSize(246, 64));
         logUpdate->setBaseSize(QSize(0, 32));
@@ -455,11 +478,11 @@ public:
 
         logConsole = new QPlainTextEdit(centralwidget);
         logConsole->setObjectName(QStringLiteral("logConsole"));
-        QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Expanding);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(logConsole->sizePolicy().hasHeightForWidth());
-        logConsole->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(logConsole->sizePolicy().hasHeightForWidth());
+        logConsole->setSizePolicy(sizePolicy6);
         logConsole->setMaximumSize(QSize(246, 16777215));
 
         verticalLayout_8->addWidget(logConsole);
@@ -576,11 +599,11 @@ public:
         verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
         groupBox_4 = new QGroupBox(tab_2);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
-        groupBox_4->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(groupBox_4->sizePolicy().hasHeightForWidth());
+        groupBox_4->setSizePolicy(sizePolicy7);
         verticalLayout_6 = new QVBoxLayout(groupBox_4);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         horizontalLayout_11 = new QHBoxLayout();
@@ -766,11 +789,11 @@ public:
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         groupBox_5 = new QGroupBox(tab_2);
         groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        QSizePolicy sizePolicy7(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
-        groupBox_5->setSizePolicy(sizePolicy7);
+        QSizePolicy sizePolicy8(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy8.setHorizontalStretch(0);
+        sizePolicy8.setVerticalStretch(0);
+        sizePolicy8.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
+        groupBox_5->setSizePolicy(sizePolicy8);
         verticalLayout_7 = new QVBoxLayout(groupBox_5);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         label_12 = new QLabel(groupBox_5);
